@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Zap, Factory, Shield, Wrench, ArrowRight, Sparkles, Cpu, Gauge } from 'lucide-react';
 
 export default function InteractiveHoverSection() {
@@ -249,11 +250,14 @@ export default function InteractiveHoverSection() {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer">
+          <Link 
+            to="/experience-innovation"
+            className="inline-flex items-center space-x-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer"
+          >
             <Factory className="h-5 w-5" />
             <span>Experience Our Innovation</span>
             <ArrowRight className="h-5 w-5" />
-          </div>
+          </Link>
         </div>
       </div>
     </section>

@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Properties from './components/Properties';
 import InteractiveHoverSection from './components/InteractiveHoverSection';
+import ExperienceInnovation from './components/ExperienceInnovation';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import RequestQuote from './components/RequestQuote';
@@ -88,6 +89,7 @@ export default function App() {
       <Route path="/half-dala-detail" element={<HalfDalaDetail />} />
       <Route path="/balwan-bhoosi-detail" element={<BalwanBhoosiDetail />} />
       <Route path="/vfw-half-dala-detail" element={<VFWHalfDalaDetail />} />
+      <Route path="/experience-innovation" element={<ExperienceInnovation />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-conditions" element={<TermsConditions />} />
       <Route path="/warranty-policy" element={<WarrantyPolicy />} />
