@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin, ArrowUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -130,17 +131,17 @@ export default function Footer() {
                 &copy; 2026 Vishwakarma Foundry Works. All rights reserved.
               </p>
               <div className="flex space-x-4 text-sm">
-                <a href="/privacy-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
+                <Link to="/privacy-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
                   Privacy Policy
-                </a>
+                </Link>
                 <span className="text-gray-600">|</span>
-                <a href="/terms-conditions" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
+                <Link to="/terms-conditions" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
                   Terms & Conditions
-                </a>
+                </Link>
                 <span className="text-gray-600">|</span>
-                <a href="/warranty-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
+                <Link to="/warranty-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
                   Warranty Policy
-                </a>
+                </Link>
               </div>
             </div>
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Filter, Wrench, Zap, Gauge, Heart, Share2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Properties() {
   const [filters, setFilters] = useState({
@@ -155,16 +156,16 @@ export default function Properties() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredProducts.map((product) => {
+          {featuredProducts.map((product, index) => {
             const productImages = getProductImages(product.id);
             const currentImageIndex = currentImageIndices[product.id] || 0;
             return (
-              <div key={product.id} className="bg-white rounded-2xl shadow-premium overflow-hidden hover:shadow-premium-lg transition-all duration-300 group border border-neutral-100 hover:border-primary-200 hover:scale-105">
+              <div key={product.id} className="bg-white rounded-2xl shadow-premium overflow-hidden hover:shadow-premium-lg transition-all duration-300 group border border-neutral-100 hover:border-primary-200 hover:scale-105" style={{animationDelay: `${index * 150}ms`}}>
                 <div className="relative">
                   <img 
                     src={productImages[currentImageIndex]} 
                     alt={product.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   
                   {/* Left Navigation Button */}
@@ -235,20 +236,16 @@ export default function Properties() {
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => {
-                      if (product.id === 1) {
-                        window.location.href = '/half-dala-detail';
-                      } else if (product.id === 2) {
-                        window.location.href = '/balwan-bhoosi-detail';
-                      } else if (product.id === 3) {
-                        window.location.href = '/vfw-half-dala-detail';
-                      }
-                    }}
-                    className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 font-semibold text-sm shadow-premium hover:shadow-premium-lg hover:scale-[1.02]"
+                  <Link 
+                    to={
+                      product.id === 1 ? '/half-dala-detail' :
+                      product.id === 2 ? '/balwan-bhoosi-detail' :
+                      '/vfw-half-dala-detail'
+                    }
+                    className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 font-semibold text-sm shadow-premium hover:shadow-premium-lg hover:scale-[1.02] text-center block"
                   >
                     View Details
-                  </button>
+                  </Link>
                 </div>
               </div>
             );

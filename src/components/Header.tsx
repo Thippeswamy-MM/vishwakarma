@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X, Search, ChevronDown, PhoneCall, User, Wrench } from 'lucide-react';
 
 export default function Header() {
@@ -185,7 +186,7 @@ export default function Header() {
             <span className="text-green-300 font-semibold ml-2">{t.heavyIronMachinery}</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.requestQuote}</a>
+            <Link to="/request-quote" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.requestQuote}</Link>
             <a href="#" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.factoryVisit}</a>
             <a href="#contact" className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 px-3 py-1 rounded-full hover:from-green-700 hover:to-green-800 transition-all duration-300">
               <PhoneCall className="h-4 w-4" /> 
@@ -199,16 +200,16 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="h-32 flex items-center justify-between gap-4">
           {/* Logo */}
-          <a href="#home" className="flex items-center gap-3 group">
+          <Link to="#home" className="flex items-center gap-3 group">
             <div className="relative">
-              <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-28 w-28 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-xl" />
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-20 rounded-full blur-xl"></div>
+              <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-28 w-28 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-xl " />
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-20 rounded-full blur-xl "></div>
             </div>
             <div className="flex flex-col">
               <span className="text-4xl font-black bg-gradient-to-r from-amber-300 via-orange-400 to-red-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">Vishwakarma</span>
               <span className="text-2xl font-bold bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">Foundry Works</span>
             </div>
-          </a>
+          </Link>
 
           {/* Search */}
           <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-xl items-center bg-gradient-to-r from-gray-100 to-gray-200 border-2 border-amber-500 rounded-2xl px-4 py-3 shadow-xl hover:shadow-2xl transition-all duration-300">
@@ -225,10 +226,10 @@ export default function Header() {
 
           {/* Icons */}
           <div className="hidden md:flex items-center gap-4">
-            <button onClick={() => setIsLoginModalOpen(true)} title={t.account} className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg transform hover:scale-110">
+            <button onClick={() => setIsLoginModalOpen(true)} title={t.account} className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg transform hover:scale-110 ">
               <User className="h-6 w-6 text-white" />
             </button>
-            <button onClick={() => setIsInquiryModalOpen(true)} title={t.inquiry} className="bg-gradient-to-r from-gray-900 to-black p-3 rounded-full hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg transform hover:scale-110">
+            <button onClick={() => setIsInquiryModalOpen(true)} title={t.inquiry} className="bg-gradient-to-r from-gray-900 to-black p-3 rounded-full hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg transform hover:scale-110  ">
               <Wrench className="h-6 w-6 text-white" />
             </button>
           </div>
@@ -261,8 +262,8 @@ export default function Header() {
                       <ul className="space-y-3">
                         {col.items.map((i) => (
                           <li key={i}>
-                            <a href="#" className="text-sm text-gray-800 hover:text-amber-600 font-medium transition-colors duration-200 flex items-center gap-2 hover:bg-amber-100 px-3 py-2 rounded-lg">
-                              <div className="w-2 h-2 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full"></div>
+                            <a href="#" className="text-sm text-gray-800 hover:text-amber-600 font-medium transition-colors duration-200 flex items-center gap-2 hover:bg-amber-100 px-3 py-2 rounded-lg ">
+                              <div className="w-2 h-2 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full "></div>
                               {i}
                             </a>
                           </li>
@@ -278,7 +279,7 @@ export default function Header() {
 
         {/* Mobile drawer */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-neutral-200 py-3">
+          <div className="md:hidden border-t border-neutral-200 py-3 ">
             <div className="mb-3 flex items-center bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2">
               <Search className="h-5 w-5 text-neutral-500" />
               <input className="flex-1 bg-transparent px-2 outline-none text-sm" placeholder="Search products" />
@@ -301,8 +302,8 @@ export default function Header() {
 
       {/* Login/Signup Modal */}
       {isLoginModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4 ">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative ">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-neutral-200">
               <h2 className="text-2xl font-bold text-neutral-900">
@@ -452,8 +453,8 @@ export default function Header() {
 
       {/* Inquiry Modal */}
       {isInquiryModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4 ">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto ">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-neutral-200 sticky top-0 bg-white z-10">
               <h2 className="text-2xl font-bold text-neutral-900">

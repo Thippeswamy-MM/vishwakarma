@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, CheckCircle, Facebook, Twitter, Instagram, Linkedin, Factory } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Facebook, Twitter, Instagram, Linkedin, Factory, AlertCircle, CheckCircle } from 'lucide-react';
+import axios from 'axios';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,13 +13,35 @@ export default function Contact() {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/contact', formData);
+      
+      if (response.data.success) {
+        setIsSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        setError(response.data.message || 'Failed to send message. Please try again.');
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -110,10 +134,13 @@ export default function Contact() {
 
             {/* Quick Contact Options */}
             <div className="mt-8 space-y-4">
-              <button className="w-full bg-green-600 text-white p-4 rounded-xl hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2">
+              <Link 
+                to="/whatsapp-inquiry"
+                className="w-full bg-green-600 text-white p-4 rounded-xl hover:bg-green-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
                 <MessageCircle className="h-5 w-5" />
                 <span>WhatsApp Inquiry</span>
-              </button>
+              </Link>
               
               <button className="w-full bg-gray-800 text-white p-4 rounded-xl hover:bg-gray-700 transition-colors duration-200 flex items-center justify-center space-x-2">
                 <Factory className="h-5 w-5" />
@@ -219,12 +246,30 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium text-lg flex items-center justify-center space-x-2"
+                  disabled={isLoading}
+                  className="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium text-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Send className="h-5 w-5" />
-                  <span>Send Message</span>
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-5 w-5" />
+                      <span>Send Message</span>
+                    </>
+                  )}
                 </button>
               </form>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
+                  <AlertCircle className="h-5 w-5 mr-2" />
+                  <span>{error}</span>
+                </div>
+              )}
 
               {/* Success Message */}
               {isSubmitted && (

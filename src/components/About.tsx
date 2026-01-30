@@ -52,7 +52,7 @@ export default function About() {
           </div>
           
           <div className="grid grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-primary-200 hover:scale-105 group">
+            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-primary-200 hover:scale-105 group" style={{animationDelay: '100ms'}}>
               <div className="bg-gradient-to-br from-primary-100 to-primary-200 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Factory className="h-10 w-10 text-primary-600" />
               </div>
@@ -60,7 +60,7 @@ export default function About() {
               <p className="text-neutral-600 leading-relaxed">Premium materials and expert craftsmanship</p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-secondary-200 hover:scale-105 group">
+            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-secondary-200 hover:scale-105 group" style={{animationDelay: '200ms'}}>
               <div className="bg-gradient-to-br from-secondary-100 to-secondary-200 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Wrench className="h-10 w-10 text-secondary-600" />
               </div>
@@ -68,7 +68,7 @@ export default function About() {
               <p className="text-neutral-600 leading-relaxed">Built with heavy iron for long-lasting performance</p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-accent-200 hover:scale-105 group">
+            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-accent-200 hover:scale-105 group" style={{animationDelay: '300ms'}}>
               <div className="bg-gradient-to-br from-accent-100 to-accent-200 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Target className="h-10 w-10 text-accent-600" />
               </div>
@@ -76,7 +76,7 @@ export default function About() {
               <p className="text-neutral-600 leading-relaxed">1 ton/hour capacity for maximum productivity</p>
             </div>
 
-            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-success-200 hover:scale-105 group">
+            <div className="bg-white p-8 rounded-3xl shadow-premium text-center hover:shadow-premium-lg transition-all duration-300 border border-neutral-100 hover:border-success-200 hover:scale-105 group" style={{animationDelay: '400ms'}}>
               <div className="bg-gradient-to-br from-success-100 to-success-200 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Award className="h-10 w-10 text-success-600" />
               </div>
@@ -98,15 +98,15 @@ export default function About() {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-16">
-              <div className="text-center">
+              <div className="text-center" style={{animationDelay: '500ms'}}>
                 <div className="text-5xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent mb-4">500+</div>
                 <p className="text-neutral-600 text-lg">Satisfied Customers Across India</p>
               </div>
-              <div className="text-center">
+              <div className="text-center" style={{animationDelay: '600ms'}}>
                 <div className="text-5xl font-bold bg-gradient-to-r from-secondary-600 to-secondary-700 bg-clip-text text-transparent mb-4">15+</div>
                 <p className="text-neutral-600 text-lg">States Where Our Machines Run Successfully</p>
               </div>
-              <div className="text-center">
+              <div className="text-center" style={{animationDelay: '700ms'}}>
                 <div className="text-5xl font-bold bg-gradient-to-r from-accent-600 to-accent-700 bg-clip-text text-transparent mb-4">99.9%</div>
                 <p className="text-neutral-600 text-lg">Machine Uptime & Quality Assurance</p>
               </div>

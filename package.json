@@ -2,7 +2,6 @@
   "name": "vishwakarma-foundry-frontend",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,20 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^2.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.0",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "framer-motion": "^10.16.4",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.8.1",
-    "axios": "^1.6.0",
-    "react-query": "^3.39.3",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.4.1",
-    "framer-motion": "^10.16.4",
-    "@stripe/react-stripe-js": "^2.4.0",
-    "stripe": "^14.0.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0"
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.8.1",
+    "stripe": "^14.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -42,5 +44,3 @@
     "vite": "^5.4.2"
   }
 }
-
-

@@ -89,7 +89,7 @@ export default function Features() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           {productFeatures.map((feature, index) => (
-            <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+            <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group hover:scale-105" style={{animationDelay: `${index * 100}ms`}}>
               <div className={`${feature.color} w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                 {feature.icon}
               </div>
@@ -113,7 +113,7 @@ export default function Features() {
 
             <div className="space-y-6">
               {specifications.map((feature, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200" style={{animationDelay: `${index * 150}ms`}}>
                   <div className="bg-blue-100 p-2 rounded-lg">
                     {feature.icon}
                   </div>
@@ -125,7 +125,7 @@ export default function Features() {
               ))}
             </div>
 
-            <button className="w-full mt-8 bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+            <button className="w-full mt-8 bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium hover:scale-105">
               Download Specifications
             </button>
           </div>
@@ -142,7 +142,7 @@ export default function Features() {
 
             <div className="space-y-6">
               {applications.map((feature, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                <div key={index} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200" style={{animationDelay: `${index * 150 + 300}ms`}}>
                   <div className="bg-orange-100 p-2 rounded-lg">
                     {feature.icon}
                   </div>
