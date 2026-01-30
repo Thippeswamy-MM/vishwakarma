@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, ChevronDown, PhoneCall, User, Wrench } from 'lucide-react';
 
@@ -10,6 +10,9 @@ export default function Header() {
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isHindi, setIsHindi] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,6 +21,39 @@ export default function Header() {
     inquiryType: '',
     message: ''
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Clear existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      
+      // Hide header when scrolling down
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      }
+      
+      // Set a timeout to show header when scrolling stops
+      const newTimeout = setTimeout(() => {
+        setIsVisible(true);
+      }, 150); // Wait 150ms after scrolling stops
+      
+      setScrollTimeout(newTimeout);
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, [lastScrollY, scrollTimeout]);
 
   const translations = {
     english: {
@@ -169,7 +205,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 border-b border-amber-700 shadow-2xl">
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 border-b border-amber-700 shadow-2xl transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       {/* Language Toggle - Top Left */}
       <button
         onClick={() => setIsHindi(!isHindi)}
