@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Factory, Wrench, Truck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Hero = () => {
+  const { isHindi } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const translations = {
+    english: {
+      premiumMachinery: "Premium Agricultural Machinery",
+      tagline: "Leading manufacturer of high-quality agricultural machinery including Half Dala Machine, Bhoosi Tank Model, Balwan Tank Model, and Bran Expert. Built with heavy iron materials for long-lasting performance.",
+      description: "Engineered for durability and efficiency, our Half Dala Machine offers powerful grain processing with minimal downtime, making it a trusted choice for modern agricultural operations.",
+      altText: "Agricultural Machinery"
+    },
+    hindi: {
+      premiumMachinery: "प्रीमियम कृषि मशीनरी",
+      tagline: "उच्च गुणवत्ता वाली कृषि मशीनरी के अग्रणी निर्माता जिसमें हाफ डाला मशीन, भूसी टैंक मॉडल, बलवान टैंक मॉडल और ब्रान एक्सपर्ट शामिल हैं। लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित।",
+      description: "टिकाऊपन और दक्षता के लिए इंजीनियर, हमारी हाफ डाला मशीन न्यूनतम डाउनटाइम के साथ शक्तिशाली अनाज प्रसंस्करण प्रदान करती है, जिससे यह आधुनिक कृषि संचालन के लिए एक विश्वसनीय विकल्प बन जाती है।",
+      altText: "कृषि मशीनरी"
+    }
+  };
+  
+  const t = isHindi ? translations.hindi : translations.english;
   
   const heroImages = [
     "https://images.pexels.com/photos/30005294/pexels-photo-30005294.jpeg",
@@ -28,34 +47,24 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <section id="home" className="relative overflow-hidden bg-gradient-to-br from-amber-100 via-orange-50 to-red-100 animate-gradient-shift">
-      {/* Machinery Animated Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-10 w-32 h-32 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full animate-machine-gear"></div>
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-machine-crank animate-delay-200"></div>
-        <div className="absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-red-400 to-purple-500 rounded-full animate-machine-piston animate-delay-400"></div>
-        <div className="absolute top-1/4 right-1/4 w-36 h-36 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full animate-machine-rotate animate-delay-600"></div>
-      </div>
+    <section id="home" className="relative bg-[#fff7e6]">
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-6 pb-8 md:pt-8 md:pb-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border-2 border-amber-500 rounded-2xl px-6 py-3 mb-6 shadow-xl transform hover:scale-105 transition-all duration-300">
               <Factory className="h-6 w-6 text-amber-600" />
-              <span className="text-lg font-bold text-amber-800">Premium Agricultural Machinery</span>
+              <span className="text-lg font-bold text-amber-800">{t.premiumMachinery}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">Vishwakarma Foundry Works</h1>
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8 max-w-2xl font-medium">
-              Leading manufacturer of high-quality agricultural machinery including Half Dala Machine, 
-              Bhoosi Tank Model, Balwan Tank Model, and Bran Expert. Built with heavy iron materials 
-              for long-lasting performance.
+              {t.tagline}
             </p>
 
             <div className="bg-gradient-to-r from-white via-amber-50 to-orange-50 backdrop-blur-md rounded-3xl p-6 shadow-2xl border-2 border-amber-500 max-w-lg mr-0 transform hover:scale-105 transition-all duration-300">
               <p className="text-lg text-gray-800 leading-relaxed font-semibold">
-                Engineered for durability and efficiency, our Half Dala Machine offers powerful grain processing 
-                with minimal downtime, making it a trusted choice for modern agricultural operations.
+                {t.description}
               </p>
             </div>
           </div>
@@ -65,7 +74,7 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-600 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
               <img 
                 src={heroImages[currentImageIndex]} 
-                alt="Agricultural Machinery" 
+                alt={t.altText} 
                 className="relative w-full h-96 object-cover rounded-3xl shadow-2xl transform group-hover:scale-105 transition-all duration-500"
               />
               
@@ -102,51 +111,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Standard Custom Animations */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
-          @keyframes slide-in-left {
-            from { transform: translateX(-50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-          }
-          @keyframes slide-in-right {
-            from { transform: translateX(50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-          }
-          @keyframes fade-in-up {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-          }
-          @keyframes background-pulse {
-            0%, 100% { opacity: 0.1; }
-            50% { opacity: 0.2; }
-          }
-          .animate-gradient-shift {
-            background-size: 200% 200%;
-            animation: gradient-shift 8s ease infinite;
-          }
-          .animate-slide-in-left {
-            animation: slide-in-left 0.8s ease-out forwards;
-          }
-          .animate-slide-in-right {
-            animation: slide-in-right 0.8s ease-out forwards;
-          }
-          .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-          }
-          .animate-background-pulse {
-            animation: background-pulse 4s ease-in-out infinite;
-          }
-          .animate-delay-100 { animation-delay: 100ms; }
-          .animate-delay-200 { animation-delay: 200ms; }
-          .animate-delay-300 { animation-delay: 300ms; }
-          .animate-delay-400 { animation-delay: 400ms; }
-        `
-      }} />
     </section>
   );
 };

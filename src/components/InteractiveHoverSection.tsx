@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, Factory, Shield, Wrench, ArrowRight, Sparkles, Cpu, Gauge } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function InteractiveHoverSection() {
+  const { isHindi } = useLanguage();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -25,49 +27,120 @@ export default function InteractiveHoverSection() {
     }
   }, []);
 
+  const translations = {
+    english: {
+      interactiveExperience: "Interactive Experience",
+      discoverExcellence: "Discover Our Excellence",
+      hoverDescription: "Hover over the cards below to explore our advanced manufacturing capabilities and innovative solutions",
+      smartManufacturing: "Smart Manufacturing",
+      advancedTechnology: "Advanced Technology",
+      smartManufacturingDesc: "Cutting-edge manufacturing processes with precision engineering",
+      heavyDutyPerformance: "Heavy Duty Performance",
+      builtToLast: "Built to Last",
+      heavyDutyDesc: "Industrial-grade machinery designed for maximum durability",
+      precisionEngineering: "Precision Engineering",
+      expertCraftsmanship: "Expert Craftsmanship",
+      precisionDesc: "Meticulously engineered components for optimal performance",
+      powerEfficiency: "Power & Efficiency",
+      maximumOutput: "Maximum Output",
+      powerDesc: "High-performance machinery with exceptional efficiency",
+      exploreMore: "Explore More",
+      experienceInnovation: "Experience Our Innovation",
+      features: {
+        aiControl: "AI-Powered Quality Control",
+        automatedLines: "Automated Production Lines",
+        realTimeMonitoring: "Real-time Monitoring",
+        heavyIron: "Heavy Iron Construction",
+        weatherResistant: "Weather Resistant",
+        lowMaintenance: "Low Maintenance",
+        tightTolerances: "Tight Tolerances",
+        qualityMaterials: "Quality Materials",
+        expertAssembly: "Expert Assembly",
+        energyEfficient: "Energy Efficient",
+        highCapacity: "High Capacity",
+        fastProcessing: "Fast Processing"
+      }
+    },
+    hindi: {
+      interactiveExperience: "इंटरैक्टिव अनुभव",
+      discoverExcellence: "हमारी उत्कृष्टता की खोज करें",
+      hoverDescription: "हमारी उन्नत विनिर्माण क्षमताओं और नवाचार समाधानों का अन्वेषण करने के लिए नीचे दिए गए कार्ड पर होवर करें",
+      smartManufacturing: "स्मार्ट विनिर्माण",
+      advancedTechnology: "उन्नत प्रौद्योगिकी",
+      smartManufacturingDesc: "सटीक इंजीनियरिंग के साथ अत्याधुनिक विनिर्माण प्रक्रियाएं",
+      heavyDutyPerformance: "भारी ड्यूटी प्रदर्शन",
+      builtToLast: "लंबे समय तक चलने के लिए निर्मित",
+      heavyDutyDesc: "अधिकतम स्थायित्व के लिए डिज़ाइन किया गया औद्योगिक-ग्रेड मशीनरी",
+      precisionEngineering: "सटीक इंजीनियरिंग",
+      expertCraftsmanship: "विशेषज्ञ शिल्प कौशल",
+      precisionDesc: "इष्टतम प्रदर्शन के लिए सावधानीपूर्वक इंजीनियर किए गए घटक",
+      powerEfficiency: "शक्ति और दक्षता",
+      maximumOutput: "अधिकतम आउटपुट",
+      powerDesc: "असाधारण दक्षता के साथ उच्च प्रदर्शन मशीनरी",
+      exploreMore: "और अधिक जानें",
+      experienceInnovation: "हमारे नवाचार का अनुभव करें",
+      features: {
+        aiControl: "AI-संचालित गुणवत्ता नियंत्रण",
+        automatedLines: "स्वचालित उत्पादन लाइनें",
+        realTimeMonitoring: "रीयल-टाइम मॉनिटरिंग",
+        heavyIron: "भारी लोहे का निर्माण",
+        weatherResistant: "मौसम प्रतिरोधी",
+        lowMaintenance: "कम रखरखाव",
+        tightTolerances: "तंग सहनशीलता",
+        qualityMaterials: "गुणवत्ता सामग्री",
+        expertAssembly: "विशेषज्ञ असेंबली",
+        energyEfficient: "ऊर्जा कुशल",
+        highCapacity: "उच्च क्षमता",
+        fastProcessing: "तेज़ प्रसंस्करण"
+      }
+    }
+  };
+
+  const t = isHindi ? translations.hindi : translations.english;
+
   const hoverCards = [
     {
       id: 1,
-      title: "Smart Manufacturing",
-      subtitle: "Advanced Technology",
+      title: t.smartManufacturing,
+      subtitle: t.advancedTechnology,
       icon: Cpu,
       color: "from-blue-600 to-cyan-600",
       bgColor: "from-blue-50 to-cyan-50",
-      description: "Cutting-edge manufacturing processes with precision engineering",
-      features: ["AI-Powered Quality Control", "Automated Production Lines", "Real-time Monitoring"],
+      description: t.smartManufacturingDesc,
+      features: [t.features.aiControl, t.features.automatedLines, t.features.realTimeMonitoring],
       image: "/images/products/WhatsApp Image 2026-01-23 at 5.24.42 PM.jpeg"
     },
     {
       id: 2,
-      title: "Heavy Duty Performance",
-      subtitle: "Built to Last",
+      title: t.heavyDutyPerformance,
+      subtitle: t.builtToLast,
       icon: Shield,
       color: "from-amber-600 to-orange-600",
       bgColor: "from-amber-50 to-orange-50",
-      description: "Industrial-grade machinery designed for maximum durability",
-      features: ["Heavy Iron Construction", "Weather Resistant", "Low Maintenance"],
+      description: t.heavyDutyDesc,
+      features: [t.features.heavyIron, t.features.weatherResistant, t.features.lowMaintenance],
       image: "/images/products/1.jpeg"
     },
     {
       id: 3,
-      title: "Precision Engineering",
-      subtitle: "Expert Craftsmanship",
+      title: t.precisionEngineering,
+      subtitle: t.expertCraftsmanship,
       icon: Wrench,
       color: "from-purple-600 to-pink-600",
       bgColor: "from-purple-50 to-pink-50",
-      description: "Meticulously engineered components for optimal performance",
-      features: ["Tight Tolerances", "Quality Materials", "Expert Assembly"],
+      description: t.precisionDesc,
+      features: [t.features.tightTolerances, t.features.qualityMaterials, t.features.expertAssembly],
       image: "/images/products/5.jpeg"
     },
     {
       id: 4,
-      title: "Power & Efficiency",
-      subtitle: "Maximum Output",
+      title: t.powerEfficiency,
+      subtitle: t.maximumOutput,
       icon: Zap,
       color: "from-green-600 to-emerald-600",
       bgColor: "from-green-50 to-emerald-50",
-      description: "High-performance machinery with exceptional efficiency",
-      features: ["Energy Efficient", "High Capacity", "Fast Processing"],
+      description: t.powerDesc,
+      features: [t.features.energyEfficient, t.features.highCapacity, t.features.fastProcessing],
       image: "/images/products/WhatsApp Image 2026-01-23 at 5.24.43 PM.jpeg"
     }
   ];
@@ -101,13 +174,13 @@ export default function InteractiveHoverSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 rounded-full mb-6">
             <Sparkles className="h-5 w-5 text-amber-600" />
-            <span className="text-amber-800 font-semibold">Interactive Experience</span>
+            <span className="text-amber-800 font-semibold">{t.interactiveExperience}</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent mb-6">
-            Discover Our Excellence
+            {t.discoverExcellence}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Hover over the cards below to explore our advanced manufacturing capabilities and innovative solutions
+            {t.hoverDescription}
           </p>
         </div>
 
@@ -190,7 +263,7 @@ export default function InteractiveHoverSection() {
                         transition-all duration-700 ease-out delay-200
                         ${isHovered ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform -translate-x-4'}
                       `}>
-                        <span className="text-sm">Explore More</span>
+                        <span className="text-sm">{t.exploreMore}</span>
                         <ArrowRight className="h-4 w-4" />
                       </div>
                     </div>
@@ -255,7 +328,7 @@ export default function InteractiveHoverSection() {
             className="inline-flex items-center space-x-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer"
           >
             <Factory className="h-5 w-5" />
-            <span>Experience Our Innovation</span>
+            <span>{t.experienceInnovation}</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>

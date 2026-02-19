@@ -1,8 +1,37 @@
 import { useState } from 'react';
 import { Filter, Wrench, Zap, Gauge, Heart, Share2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Properties() {
+  const { isHindi } = useLanguage();
+  
+  const translations = {
+    english: {
+      ourProducts: "Our Products",
+      productsDesc: "High-quality agricultural machinery built with heavy iron materials for long-lasting performance",
+      halfDalaTitle: "Half Dala Machine",
+      halfDalaDesc: "Efficient grain processing machine",
+      balwanBhoosiTitle: "Balwan Bhoosi Tank",
+      balwanBhoosiDesc: "The Balwan Bhoosi Tank (also called Balwan Boosi Tank) is an agricultural storage tank/machine mainly used to store and collect bhoosi (chaff), hay, straw, or dry fodder for animals. It is commonly used in farms, dairy farms, and cattle sheds.",
+      vfwHalfDalaTitle: "VFW Half Dala Machine",
+      vfwHalfDalaDesc: "A VFW Half Dala Machine is an agricultural threshing machine designed to separate grains from stalks, husk, and chaff after harvesting with improved efficiency.",
+      viewDetails: "View Details"
+    },
+    hindi: {
+      ourProducts: "हमारे उत्पाद",
+      productsDesc: "लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित उच्च गुणवत्ता वाली कृषि मशीनरी",
+      halfDalaTitle: "हाफ डाला मशीन",
+      halfDalaDesc: "कुशल अनाज प्रसंस्करण मशीन",
+      balwanBhoosiTitle: "बलवान भूसी टैंक",
+      balwanBhoosiDesc: "बलवान भूसी टैंक (जिसे बलवान बूसी टैंक भी कहा जाता है) एक कृषि भंडारण टैंक/मशीन है जिसका उपयोग मुख्य रूप से जानवरों के लिए भूसी (चैफ), घास, भूसा या सूखा चारा संग्रहीत और एकत्र करने के लिए किया जाता है। यह आमतौर पर खेतों, डेयरी फार्मों और पशुशालाओं में उपयोग किया जाता है।",
+      vfwHalfDalaTitle: "VFW हाफ डाला मशीन",
+      vfwHalfDalaDesc: "VFW हाफ डाला मशीन एक कृषि थ्रेशिंग मशीन है जिसे बेहतर दक्षता के साथ कटाई के बाद अनाज को डंठल, भूसी और भूसी से अलग करने के लिए डिज़ाइन किया गया है।",
+      viewDetails: "विवरण देखें"
+    }
+  };
+  
+  const t = isHindi ? translations.hindi : translations.english;
   const [filters, setFilters] = useState({
     type: 'all',
     capacity: 'all',
@@ -65,8 +94,8 @@ export default function Properties() {
   const products = [
     {
       id: 1,
-      title: 'Half Dala Machine',
-      description: 'Efficient grain processing machine',
+      title: isHindi ? t.halfDalaTitle : 'Half Dala Machine',
+      description: t.halfDalaDesc,
       capacity: '1 Ton/Hour',
       power: '39 HP Tractor / 30 HP Electric',
       image: '/images/products/WhatsApp Image 2026-01-23 at 5.24.42 PM.jpeg',
@@ -76,8 +105,8 @@ export default function Properties() {
     },
     {
       id: 2,
-      title: 'Balwan Bhoosi Tank',
-      description: 'The Balwan Bhoosi Tank (also called Balwan Boosi Tank) is an agricultural storage tank/machine mainly used to store and collect bhoosi (chaff), hay, straw, or dry fodder for animals. It is commonly used in farms, dairy farms, and cattle sheds.',
+      title: isHindi ? t.balwanBhoosiTitle : 'Balwan Bhoosi Tank',
+      description: t.balwanBhoosiDesc,
       capacity: '500-1000 Kg',
       power: 'Manual Operation',
       image: '/images/products/1.jpeg',
@@ -87,8 +116,8 @@ export default function Properties() {
     },
     {
       id: 3,
-      title: 'VFW Half Dala Machine',
-      description: 'A VFW Half Dala Machine is an agricultural threshing machine designed to separate grains from stalks, husk, and chaff after harvesting with improved efficiency.',
+      title: isHindi ? t.vfwHalfDalaTitle : 'VFW Half Dala Machine',
+      description: t.vfwHalfDalaDesc,
       capacity: '1.5 Ton/Hour',
       power: '45 HP Tractor / 35 HP Electric',
       image: '/images/products/WhatsApp Image 2026-01-23 at 5.24.43 PM (1).jpeg',
@@ -105,9 +134,9 @@ export default function Properties() {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-neutral-900 via-primary-800 to-secondary-800 bg-clip-text text-transparent mb-8">Our Products</h2>
+          <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-neutral-900 via-primary-800 to-secondary-800 bg-clip-text text-transparent mb-8">{t.ourProducts}</h2>
           <p className="text-xl md:text-2xl text-neutral-600 max-w-4xl mx-auto leading-relaxed">
-            High-quality agricultural machinery built with heavy iron materials for long-lasting performance
+            {t.productsDesc}
           </p>
         </div>
 
@@ -244,7 +273,7 @@ export default function Properties() {
                     }
                     className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-3 px-6 rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 font-semibold text-sm shadow-premium hover:shadow-premium-lg hover:scale-[1.02] text-center block"
                   >
-                    View Details
+                    {t.viewDetails}
                   </Link>
                 </div>
               </div>

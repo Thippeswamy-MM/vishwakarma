@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search, ChevronDown, PhoneCall, User, Wrench } from 'lucide-react';
+import { Menu, X, Search, ChevronDown, PhoneCall, User, Wrench, MapPin } from 'lucide-react';
+import { useLanguage, LanguageCode } from '../contexts/LanguageContext';
 
 export default function Header() {
+  const { language, setLanguage, isHindi } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMega, setOpenMega] = useState<string | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isHindi, setIsHindi] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [userLocation, setUserLocation] = useState<string>('');
+  const [isDetectingLocation, setIsDetectingLocation] = useState(true);
+  const [isLocationMenuOpen, setIsLocationMenuOpen] = useState(false);
+  const [isAutoDetected, setIsAutoDetected] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [formData, setFormData] = useState({
@@ -54,6 +60,156 @@ export default function Header() {
       }
     };
   }, [lastScrollY, scrollTimeout]);
+
+  // Country to language mapping
+  const getLanguageFromCountry = (countryCode: string): LanguageCode => {
+    // We only have full, verified content for English and Hindi.
+    // To avoid wrong or partial translations, we map:
+    // - India -> Hindi
+    // - All other countries -> English
+    if (countryCode === 'IN') {
+      return 'hi';
+    }
+    return 'en';
+  };
+
+  // Function to detect location automatically
+  const detectLocationAutomatically = async () => {
+    try {
+      setIsDetectingLocation(true);
+      setIsLocationMenuOpen(false);
+      
+      // Try IP-based geolocation first (free service)
+      try {
+        const ipResponse = await fetch('https://ipapi.co/json/');
+        if (ipResponse.ok) {
+          const ipData = await ipResponse.json();
+          const country = ipData.country_code;
+          const region = ipData.region || ipData.state || '';
+          const city = ipData.city || '';
+          
+          // Get language based on country
+          const detectedLang = getLanguageFromCountry(country);
+          setLanguage(detectedLang);
+          
+          // Set location display and key
+          let locationKey = '';
+          if (country === 'IN') {
+            const regionLower = region.toLowerCase();
+            if (regionLower.includes('uttar pradesh') || ipData.region_code === 'UP') {
+              setUserLocation('Uttar Pradesh, India');
+              locationKey = 'up';
+            } else if (regionLower.includes('madhya pradesh') || ipData.region_code === 'MP') {
+              setUserLocation('Madhya Pradesh, India');
+              locationKey = 'mp';
+            } else if (regionLower.includes('bihar') || ipData.region_code === 'BR') {
+              setUserLocation('Bihar, India');
+              locationKey = 'bihar';
+            } else if (regionLower.includes('rajasthan') || ipData.region_code === 'RJ') {
+              setUserLocation('Rajasthan, India');
+              locationKey = 'rajasthan';
+            } else if (regionLower.includes('haryana') || ipData.region_code === 'HR') {
+              setUserLocation('Haryana, India');
+              locationKey = 'haryana';
+            } else if (regionLower.includes('delhi') || ipData.region_code === 'DL') {
+              setUserLocation('Delhi, India');
+              locationKey = 'delhi';
+            } else {
+              if (region && city) {
+                setUserLocation(`${city}, ${region}`);
+              } else if (region) {
+                setUserLocation(region);
+              } else {
+                setUserLocation('India');
+              }
+              locationKey = 'india';
+            }
+          } else {
+            // Map country codes to location keys
+            const countryLocationMap: { [key: string]: { location: string, key: string } } = {
+              'US': { location: 'United States', key: 'us' },
+              'GB': { location: 'United Kingdom', key: 'uk' },
+              'CA': { location: 'Canada', key: 'ca' },
+              'AU': { location: 'Australia', key: 'au' },
+              'ES': { location: 'Spain', key: 'es' },
+              'MX': { location: 'Mexico', key: 'mx' },
+              'FR': { location: 'France', key: 'fr' },
+              'DE': { location: 'Germany', key: 'de' },
+              'IT': { location: 'Italy', key: 'it' },
+              'PT': { location: 'Portugal', key: 'pt' },
+              'BR': { location: 'Brazil', key: 'br' },
+              'CN': { location: 'China', key: 'cn' },
+              'JP': { location: 'Japan', key: 'jp' },
+              'AR': { location: 'Argentina', key: 'ar' },
+              'CO': { location: 'Colombia', key: 'co' },
+              'RU': { location: 'Russia', key: 'ru' },
+            };
+            
+            const locationData = countryLocationMap[country] || { location: country || 'International', key: 'international' };
+            setUserLocation(locationData.location);
+            locationKey = locationData.key;
+          }
+          
+          setSelectedLocationKey(locationKey);
+          setIsAutoDetected(true);
+          
+          setIsDetectingLocation(false);
+          return;
+        }
+      } catch (ipError) {
+        console.log('IP geolocation failed, trying browser language...');
+      }
+      
+      // Fallback: Use browser language preference
+      const browserLang = navigator.language || (navigator as any).userLanguage;
+      const langCode = browserLang.split('-')[0] as LanguageCode;
+      const supportedLangs: LanguageCode[] = ['en', 'hi'];
+      const detectedLang = supportedLangs.includes(langCode) ? langCode : 'en';
+      
+      setLanguage(detectedLang);
+      setUserLocation('International');
+      setSelectedLocationKey('international');
+      setIsAutoDetected(true);
+      
+      setIsDetectingLocation(false);
+    } catch (error) {
+      console.error('Location detection error:', error);
+      // Default fallback
+      const browserLang = navigator.language || (navigator as any).userLanguage;
+      const langCode = browserLang.split('-')[0] as LanguageCode;
+      const supportedLangs: LanguageCode[] = ['en', 'hi'];
+      const detectedLang = supportedLangs.includes(langCode) ? langCode : 'en';
+      
+      setLanguage(detectedLang);
+      setUserLocation('International');
+      setSelectedLocationKey('international');
+      setIsAutoDetected(true);
+      setIsDetectingLocation(false);
+    }
+  };
+
+  // Location-based language detection on component mount
+  useEffect(() => {
+    detectLocationAutomatically();
+  }, []);
+
+  // Close location menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isLocationMenuOpen && !target.closest('.location-menu-container')) {
+        setIsLocationMenuOpen(false);
+      }
+    };
+
+    if (isLocationMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLocationMenuOpen]);
 
   const translations = {
     english: {
@@ -156,6 +312,52 @@ export default function Header() {
     }
   };
 
+  const [selectedLocationKey, setSelectedLocationKey] = useState<string>('');
+
+  const handleLocationChange = (locationKey: string, location: string, langCode: LanguageCode) => {
+    if (locationKey === 'auto') {
+      detectLocationAutomatically();
+      return;
+    }
+    setUserLocation(location);
+    setSelectedLocationKey(locationKey);
+    setLanguage(langCode);
+    setIsAutoDetected(false); // Mark as manually selected
+    setIsLocationMenuOpen(false);
+  };
+
+  const locationOptions = [
+    { key: 'auto', name: '🌍 Auto Detect', location: '', langCode: 'en' as LanguageCode, isAuto: true },
+    { key: 'divider1', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
+    // India (Hindi)
+    { key: 'india', name: 'India (Hindi)', location: 'India', langCode: 'hi' as LanguageCode },
+    { key: 'up', name: 'Uttar Pradesh, India', location: 'Uttar Pradesh, India', langCode: 'hi' as LanguageCode },
+    { key: 'mp', name: 'Madhya Pradesh, India', location: 'Madhya Pradesh, India', langCode: 'hi' as LanguageCode },
+    { key: 'bihar', name: 'Bihar, India', location: 'Bihar, India', langCode: 'hi' as LanguageCode },
+    { key: 'rajasthan', name: 'Rajasthan, India', location: 'Rajasthan, India', langCode: 'hi' as LanguageCode },
+    { key: 'haryana', name: 'Haryana, India', location: 'Haryana, India', langCode: 'hi' as LanguageCode },
+    { key: 'delhi', name: 'Delhi, India', location: 'Delhi, India', langCode: 'hi' as LanguageCode },
+    { key: 'divider2', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
+    // English UI for all other regions
+    { key: 'us', name: 'United States', location: 'United States', langCode: 'en' as LanguageCode },
+    { key: 'uk', name: 'United Kingdom', location: 'United Kingdom', langCode: 'en' as LanguageCode },
+    { key: 'ca', name: 'Canada', location: 'Canada', langCode: 'en' as LanguageCode },
+    { key: 'au', name: 'Australia', location: 'Australia', langCode: 'en' as LanguageCode },
+    { key: 'es', name: 'Spain', location: 'Spain', langCode: 'en' as LanguageCode },
+    { key: 'mx', name: 'Mexico', location: 'Mexico', langCode: 'en' as LanguageCode },
+    { key: 'fr', name: 'France', location: 'France', langCode: 'en' as LanguageCode },
+    { key: 'de', name: 'Germany', location: 'Germany', langCode: 'en' as LanguageCode },
+    { key: 'it', name: 'Italy', location: 'Italy', langCode: 'en' as LanguageCode },
+    { key: 'pt', name: 'Portugal', location: 'Portugal', langCode: 'en' as LanguageCode },
+    { key: 'br', name: 'Brazil', location: 'Brazil', langCode: 'en' as LanguageCode },
+    { key: 'cn', name: 'China', location: 'China', langCode: 'en' as LanguageCode },
+    { key: 'jp', name: 'Japan', location: 'Japan', langCode: 'en' as LanguageCode },
+    { key: 'ru', name: 'Russia', location: 'Russia', langCode: 'en' as LanguageCode },
+    { key: 'sa', name: 'Saudi Arabia', location: 'Saudi Arabia', langCode: 'en' as LanguageCode },
+    { key: 'divider3', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
+    { key: 'international', name: 'International', location: 'International', langCode: 'en' as LanguageCode },
+  ];
+
   const megaNav = [
     {
       id: 'products',
@@ -206,13 +408,74 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 border-b border-amber-700 shadow-2xl transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-      {/* Language Toggle - Top Left */}
-      <button
-        onClick={() => setIsHindi(!isHindi)}
-        className="fixed top-4 left-4 z-[9999] bg-gradient-to-r from-green-600 to-green-700 text-white px-2 py-1 rounded-full hover:from-green-700 hover:to-green-800 transition-all duration-300 text-xs font-bold flex items-center gap-1 shadow-xl transform hover:scale-105"
-      >
-        {isHindi ? 'EN' : 'हि'}
-      </button>
+      {/* Location Icon - Top Left */}
+      <div className="fixed top-4 left-4 z-[9999] location-menu-container">
+        <button
+          onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)}
+          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-2 rounded-full shadow-xl flex items-center gap-2 hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105"
+          title={isAutoDetected ? (isHindi ? 'स्वचालित रूप से पता लगाया गया' : 'Auto-detected') : (isHindi ? 'मैन्युअल रूप से चुना गया' : 'Manually selected')}
+        >
+          <MapPin className="h-4 w-4" />
+          <span className="text-xs font-bold">
+            {isDetectingLocation ? 'Detecting...' : (userLocation || 'Location')}
+          </span>
+          {isAutoDetected && !isDetectingLocation && (
+            <span className="text-[10px] opacity-75">⚡</span>
+          )}
+          <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
+        </button>
+        
+        {/* Location Dropdown Menu */}
+        {isLocationMenuOpen && (
+          <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-green-500 overflow-hidden">
+            <div className="p-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-xs font-bold px-4 py-2">
+              {isHindi ? 'स्थान चुनें' : 'Select Location'}
+            </div>
+            <div className="max-h-80 overflow-y-auto">
+              {locationOptions.map((option, index) => {
+                if (option.isDivider) {
+                  return <div key={index} className="border-t border-gray-200 my-1"></div>;
+                }
+                
+                if (option.isAuto) {
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleLocationChange(option.key, option.location, option.langCode)}
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 transition-colors duration-200 flex items-center justify-between bg-blue-50 font-semibold text-blue-700"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{option.name}</span>
+                        {isDetectingLocation && (
+                          <span className="text-xs text-blue-500">Detecting...</span>
+                        )}
+                      </span>
+                      {isAutoDetected && !isDetectingLocation && (
+                        <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      )}
+                    </button>
+                  );
+                }
+                
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleLocationChange(option.key, option.location, option.langCode)}
+                    className={`w-full text-left px-4 py-3 text-sm hover:bg-green-50 transition-colors duration-200 flex items-center justify-between ${
+                      selectedLocationKey === option.key ? 'bg-green-100 font-semibold' : ''
+                    }`}
+                  >
+                    <span>{option.name}</span>
+                    {selectedLocationKey === option.key && (
+                      <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Utility bar */}
       <div className="bg-gradient-to-r from-gray-900 to-black text-white text-xs">
@@ -336,10 +599,17 @@ export default function Header() {
         )}
       </div>
 
-      {/* Login/Signup Modal */}
-      {isLoginModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4 ">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative ">
+      {/* Login/Signup Modal - Rendered via Portal to appear over entire page */}
+      {isLoginModalOpen && createPortal(
+        <div
+          className="fixed inset-0 bg-black/50 z-[99999] overflow-y-auto"
+          onClick={() => setIsLoginModalOpen(false)}
+        >
+          <div
+            className="min-h-screen flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-neutral-200">
               <h2 className="text-2xl font-bold text-neutral-900">
@@ -485,12 +755,21 @@ export default function Header() {
             </div>
           </div>
         </div>
+        </div>,
+        document.body
       )}
 
-      {/* Inquiry Modal */}
-      {isInquiryModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4 ">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto ">
+      {/* Inquiry Modal - Rendered via Portal to appear over entire page */}
+      {isInquiryModalOpen && createPortal(
+        <div
+          className="fixed inset-0 bg-black/50 z-[99999] overflow-y-auto"
+          onClick={() => setIsInquiryModalOpen(false)}
+        >
+          <div
+            className="min-h-screen flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-neutral-200 sticky top-0 bg-white z-10">
               <h2 className="text-2xl font-bold text-neutral-900">
@@ -518,7 +797,7 @@ export default function Header() {
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'पूर्ण' : 'Full Name *'}
+                          {isHindi ? 'पूरा नाम *' : 'Full Name *'}
                         </label>
                         <input
                           type="text"
@@ -555,7 +834,7 @@ export default function Header() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'अनुरोध प्रकार' : 'Inquiry Type *'}
+                          {isHindi ? 'पूछताछ प्रकार *' : 'Inquiry Type *'}
                         </label>
                         <select
                           required
@@ -563,21 +842,21 @@ export default function Header() {
                           value={formData.inquiryType}
                           onChange={(e) => setFormData({...formData, inquiryType: e.target.value})}
                         >
-                          <option value="">{isHindi ? 'एक उत्पाद के लिए' : 'Select Product'}</option>
-                          <option value="">{isHindi ? 'ट�कनिक अनुरोध' : 'Technical Support'}</option>
-                          <option value="">{isHindi ? 'मूल्य अनुरोध' : 'General Inquiry'}</option>
+                          <option value="">{isHindi ? 'उत्पाद चुनें' : 'Select Product'}</option>
+                          <option value="">{isHindi ? 'तकनीकी सहायता' : 'Technical Support'}</option>
+                          <option value="">{isHindi ? 'सामान्य पूछताछ' : 'General Inquiry'}</option>
                           <option value="">{isHindi ? 'कारखाना भ्रमण' : 'Factory Visit'}</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'संदेशा' : 'Message *'}
+                          {isHindi ? 'संदेश *' : 'Message *'}
                         </label>
                         <textarea
                           required
                           rows={4}
                           className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                          placeholder={isHindi ? 'अपने अपना करें' : 'Describe your inquiry...'}
+                          placeholder={isHindi ? 'अपनी पूछताछ का विवरण लिखें...' : 'Describe your inquiry...'}
                           value={formData.message}
                           onChange={(e) => setFormData({...formData, message: e.target.value})}
                         />
@@ -597,60 +876,60 @@ export default function Header() {
                 <div className="space-y-6">
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
                     <h3 className="text-lg font-bold text-amber-800 mb-4">
-                      {isHindi ? 'हमारे से बारे में' : 'Why Choose Us?'}
+                      {isHindi ? 'हमें क्यों चुनें?' : 'Why Choose Us?'}
                     </h3>
                     <div className="space-y-3 text-sm text-gray-700">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full"></div>
-                        <span>{isHindi ? 'विश्वसकर्ट' : 'Expert Manufacturing'}</span>
+                        <span>{isHindi ? 'विशेषज्ञ विनिर्माण' : 'Expert Manufacturing'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                        <span>{isHindi ? 'तकनीक विशेष' : 'Quality Assured'}</span>
+                        <span>{isHindi ? 'गुणवत्ता सुनिश्चित' : 'Quality Assured'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"></div>
-                        <span>{isHindi ? '24/7 सहायत' : '24/7 Support'}</span>
+                        <span>{isHindi ? '24/7 सहायता' : '24/7 Support'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
                     <h4 className="text-md font-bold text-gray-800 mb-4">
-                      {isHindi ? 'हमारे विशेष' : 'Our Services'}
+                      {isHindi ? 'हमारी सेवाएँ' : 'Our Services'}
                     </h4>
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
-                        <span>{isHindi ? 'मुफ्री निर्माण' : 'Machine Repair'}</span>
+                        <span>{isHindi ? 'मशीन रिपेयर' : 'Machine Repair'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full"></div>
-                        <span>{isHindi ? 'स्पेयर पराम' : 'Spare Parts'}</span>
+                        <span>{isHindi ? 'स्पेयर पार्ट्स' : 'Spare Parts'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"></div>
-                        <span>{isHindi ? 'तकनीक विकास' : 'Custom Orders'}</span>
+                        <span>{isHindi ? 'कस्टम ऑर्डर' : 'Custom Orders'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-xl border border-blue-200">
                     <h4 className="text-md font-bold text-gray-800 mb-4">
-                      {isHindi ? 'ग्राहक जानकार' : 'Contact Information'}
+                      {isHindi ? 'संपर्क जानकारी' : 'Contact Information'}
                     </h4>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full"></div>
-                        <span>{isHindi ? 'कॉल फोन: +91 9415139283' : 'Call: +91 9415139283'}</span>
+                        <span>{isHindi ? 'कॉल: +91 9415139283' : 'Call: +91 9415139283'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full"></div>
-                        <span>{isHindi ? 'ईमेल: +91 7860686213' : 'Email: info@vishwakarmafoundry.com'}</span>
+                        <span>{isHindi ? 'ईमेल: info@vishwakarmafoundry.com' : 'Email: info@vishwakarmafoundry.com'}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                        <span>{isHindi ? 'वेबसाइट: +91 7007821888' : 'WhatsApp: +91 7007821888'}</span>
+                        <span>{isHindi ? 'व्हाट्सएप: +91 7007821888' : 'WhatsApp: +91 7007821888'}</span>
                       </div>
                     </div>
                   </div>
@@ -662,7 +941,7 @@ export default function Header() {
                       className="h-20 w-20 mx-auto rounded-lg shadow-lg"
                     />
                     <p className="text-xs text-gray-500 mt-2">
-                      {isHindi ? 'विश्वकर में विश्ष' : 'Trusted Since 1985'}
+                      {isHindi ? '1985 से विश्वसनीय' : 'Trusted Since 1985'}
                     </p>
                   </div>
                 </div>
@@ -670,6 +949,8 @@ export default function Header() {
             </div>
           </div>
         </div>
+        </div>,
+        document.body
       )}
     </header>
   );

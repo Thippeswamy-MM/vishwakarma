@@ -1,7 +1,51 @@
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin, ArrowUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Footer() {
+  const { isHindi } = useLanguage();
+  
+  const translations = {
+    english: {
+      companyDesc: "Leading manufacturer of premium agricultural machinery with decades of expertise in foundry work and metal fabrication. Built with heavy iron materials for long-lasting performance.",
+      quickLinks: "Quick Links",
+      home: "Home",
+      products: "Products",
+      aboutUs: "About Us",
+      specifications: "Specifications",
+      applications: "Applications",
+      contact: "Contact",
+      contactInfo: "Contact Info",
+      businessHours: "Business Hours",
+      mondaySaturday: "Monday - Saturday: 9:00 AM - 6:00 PM",
+      sunday: "Sunday: Closed",
+      copyright: "© 2026 Vishwakarma Foundry Works. All rights reserved.",
+      privacyPolicy: "Privacy Policy",
+      termsConditions: "Terms & Conditions",
+      warrantyPolicy: "Warranty Policy"
+    },
+    hindi: {
+      companyDesc: "दशकों के अनुभव के साथ प्रीमियम कृषि मशीनरी के अग्रणी निर्माता। लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित।",
+      quickLinks: "त्वरित लिंक",
+      home: "होम",
+      products: "उत्पाद",
+      aboutUs: "हमारे बारे में",
+      specifications: "विशिष्टताएं",
+      applications: "अनुप्रयोग",
+      contact: "संपर्क करें",
+      contactInfo: "संपर्क जानकारी",
+      businessHours: "व्यापारिक घंटे",
+      mondaySaturday: "सोमवार - शनिवार: सुबह 9:00 बजे - शाम 6:00 बजे",
+      sunday: "रविवार: बंद",
+      copyright: "© 2026 विश्वकर्मा फाउंड्री वर्क्स। सभी अधिकार सुरक्षित।",
+      privacyPolicy: "गोपनीयता नीति",
+      termsConditions: "नियम और शर्तें",
+      warrantyPolicy: "वारंटी नीति"
+    }
+  };
+
+  const t = isHindi ? translations.hindi : translations.english;
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -31,7 +75,7 @@ export default function Footer() {
                   <span className="text-lg font-bold bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">Foundry Works</span>
                 </div>
               </div>
-              <p className="text-gray-300 mb-6 leading-relaxed text-sm">Leading manufacturer of premium agricultural machinery with decades of expertise in foundry work and metal fabrication. Built with heavy iron materials for long-lasting performance.</p>
+              <p className="text-gray-300 mb-6 leading-relaxed text-sm">{t.companyDesc}</p>
               <div className="flex space-x-3">
                 <a href="https://www.facebook.com/vishwakarmafoundryworks" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-amber-600 to-orange-700 p-2 rounded-lg hover:from-amber-700 hover:to-orange-800 transition-all duration-300 shadow-lg transform hover:scale-110">
                   <Facebook className="h-4 w-4" />
@@ -50,15 +94,15 @@ export default function Footer() {
 
             {/* Quick Links */}
             <div className="order-3 lg:order-2 md:order-2">
-              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Quick Links</h3>
+              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">{t.quickLinks}</h3>
               <ul className="space-y-3">
                 {[
-                  { name: 'Home', href: '#home' },
-                  { name: 'Products', href: '#products' },
-                  { name: 'About Us', href: '#about' },
-                  { name: 'Specifications', href: '#features' },
-                  { name: 'Applications', href: '#features' },
-                  { name: 'Contact', href: '#contact' },
+                  { name: t.home, href: '#home' },
+                  { name: t.products, href: '#products' },
+                  { name: t.aboutUs, href: '#about' },
+                  { name: t.specifications, href: '#features' },
+                  { name: t.applications, href: '#features' },
+                  { name: t.contact, href: '#contact' },
                 ].map((link) => (
                   <li key={link.name}>
                     <a 
@@ -75,7 +119,7 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="order-2 lg:order-3 md:order-3">
-              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent">Contact Info</h3>
+              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent">{t.contactInfo}</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3 group">
                   <div className="bg-gradient-to-r from-amber-600 to-orange-700 p-2 rounded-lg shadow-lg transform group-hover:scale-110 transition-all duration-300">
@@ -113,10 +157,10 @@ export default function Footer() {
               </div>
 
               <div className="mt-6 bg-gradient-to-r from-gray-800 to-gray-900 p-4 rounded-xl shadow-xl">
-                <h4 className="text-md font-bold mb-3 bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Business Hours</h4>
+                <h4 className="text-md font-bold mb-3 bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">{t.businessHours}</h4>
                 <div className="flex flex-col space-y-1 text-gray-300 text-sm">
-                  <p className="font-medium">Monday - Saturday: 9:00 AM - 6:00 PM</p>
-                  <p className="font-medium">Sunday: Closed</p>
+                  <p className="font-medium">{t.mondaySaturday}</p>
+                  <p className="font-medium">{t.sunday}</p>
                 </div>
               </div>
             </div>
@@ -128,19 +172,19 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-wrap items-center space-x-6 mb-4 md:mb-0">
               <p className="text-gray-300 text-sm font-medium">
-                &copy; 2026 Vishwakarma Foundry Works. All rights reserved.
+                {t.copyright}
               </p>
               <div className="flex space-x-4 text-sm">
                 <Link to="/privacy-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
-                  Privacy Policy
+                  {t.privacyPolicy}
                 </Link>
                 <span className="text-gray-600">|</span>
                 <Link to="/terms-conditions" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
-                  Terms & Conditions
+                  {t.termsConditions}
                 </Link>
                 <span className="text-gray-600">|</span>
                 <Link to="/warranty-policy" className="text-gray-300 hover:text-amber-300 transition-colors duration-300 font-medium">
-                  Warranty Policy
+                  {t.warrantyPolicy}
                 </Link>
               </div>
             </div>
