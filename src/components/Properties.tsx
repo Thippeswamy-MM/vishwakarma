@@ -200,17 +200,17 @@ export default function Properties() {
                   {/* Left Navigation Button */}
                   <button 
                     onClick={() => prevImage(product.id)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all duration-300 hover:scale-110 shadow-premium"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-sm p-1.5 rounded-full hover:bg-white/70 transition-all duration-300 hover:scale-110 shadow-premium"
                   >
-                    <ChevronLeft className="h-4 w-4 text-neutral-600" />
+                    <ChevronLeft className="h-2 w-2 text-neutral-600 opacity-50" />
                   </button>
                   
                   {/* Right Navigation Button */}
                   <button 
                     onClick={() => nextImage(product.id)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-all duration-300 hover:scale-110 shadow-premium"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/50 backdrop-blur-sm p-1.5 rounded-full hover:bg-white/70 transition-all duration-300 hover:scale-110 shadow-premium"
                   >
-                    <ChevronRight className="h-4 w-4 text-neutral-600" />
+                    <ChevronRight className="h-2 w-2 text-neutral-600 opacity-50" />
                   </button>
                   
                   {/* Image Indicators */}

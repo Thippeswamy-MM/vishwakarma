@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search, ChevronDown, PhoneCall, User, Wrench, MapPin } from 'lucide-react';
+import { Menu, X, Search, ChevronDown, PhoneCall, User, HelpCircle, MapPin } from 'lucide-react';
 import { useLanguage, LanguageCode } from '../contexts/LanguageContext';
 
 export default function Header() {
@@ -408,26 +408,26 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 border-b border-amber-700 shadow-2xl transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-      {/* Location Icon - Top Left */}
-      <div className="fixed top-4 left-4 z-[9999] location-menu-container">
+      {/* Location Button - Top Left Corner */}
+      <div className="fixed top-2 left-4 z-[9999] location-menu-container">
         <button
           onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)}
-          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-2 rounded-full shadow-xl flex items-center gap-2 hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105"
+          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-2 py-1 rounded-full shadow-lg flex items-center gap-1.5 hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 relative z-[10000]"
           title={isAutoDetected ? (isHindi ? 'स्वचालित रूप से पता लगाया गया' : 'Auto-detected') : (isHindi ? 'मैन्युअल रूप से चुना गया' : 'Manually selected')}
         >
-          <MapPin className="h-4 w-4" />
-          <span className="text-xs font-bold">
+          <MapPin className="h-3 w-3" />
+          <span className="text-[10px] font-semibold">
             {isDetectingLocation ? 'Detecting...' : (userLocation || 'Location')}
           </span>
           {isAutoDetected && !isDetectingLocation && (
-            <span className="text-[10px] opacity-75">⚡</span>
+            <span className="text-[8px] opacity-75">⚡</span>
           )}
-          <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`h-2.5 w-2.5 transition-transform duration-200 ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
         </button>
         
         {/* Location Dropdown Menu */}
         {isLocationMenuOpen && (
-          <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-green-500 overflow-hidden">
+          <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-green-500 overflow-hidden z-[10001]">
             <div className="p-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-xs font-bold px-4 py-2">
               {isHindi ? 'स्थान चुनें' : 'Select Location'}
             </div>
@@ -476,20 +476,29 @@ export default function Header() {
           </div>
         )}
       </div>
+      
+      {/* Backdrop overlay when location menu is open */}
+      {isLocationMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-[9998]"
+          onClick={() => setIsLocationMenuOpen(false)}
+        />
+      )}
 
       {/* Utility bar */}
-      <div className="bg-gradient-to-r from-gray-900 to-black text-white text-xs">
+      <div className="bg-gradient-to-r from-gray-900 to-black text-white text-xs relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-3 flex items-center justify-between">
-          <div className="hidden sm:block">
+          <div className="hidden sm:block ml-40">
             <span className="font-bold text-amber-300">{t.qualityManufacturing}</span> 
             <span className="text-green-300 font-semibold ml-2">{t.heavyIronMachinery}</span>
           </div>
+          
           <div className="flex items-center gap-6">
             <Link to="/request-quote" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.requestQuote}</Link>
             <a href="#" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.factoryVisit}</a>
-            <a href="#contact" className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 px-3 py-1 rounded-full hover:from-green-700 hover:to-green-800 transition-all duration-300">
+            <a href="#contact" className="flex items-center gap-2 hover:text-amber-300 transition-colors duration-200 font-medium">
               <PhoneCall className="h-4 w-4" /> 
-              <span className="font-bold">+91 9415139283, 7860686213, 7007821888</span>
+              <span className="font-bold">+91 7860686213, 9415139283, 7007821888</span>
             </a>
           </div>
         </div>
@@ -499,9 +508,9 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="h-32 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="#home" className="flex items-center gap-3 group">
+          <Link to="#home" className="flex items-center gap-3">
             <div className="relative">
-              <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-28 w-28 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-xl " />
+              <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-28 w-28 object-contain drop-shadow-xl " />
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-20 rounded-full blur-xl "></div>
             </div>
             <div className="flex flex-col">
@@ -511,8 +520,8 @@ export default function Header() {
           </Link>
 
           {/* Search */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-xl items-center bg-gradient-to-r from-gray-100 to-gray-200 border-2 border-amber-500 rounded-2xl px-4 py-3 shadow-xl hover:shadow-2xl transition-all duration-300">
-            <Search className="h-6 w-6 text-amber-600" />
+          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-xl items-center bg-gradient-to-r from-gray-100 to-gray-200 border-2 border-amber-500 rounded-3xl px-4 py-1.5 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <Search className="h-5 w-5 text-amber-600" />
             <input 
               type="text"
               value={searchQuery}
@@ -520,7 +529,7 @@ export default function Header() {
               className="flex-1 bg-transparent px-3 outline-none text-sm font-medium text-gray-800 placeholder-gray-600" 
               placeholder={t.searchPlaceholder}
             />
-            <button type="submit" className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-xl hover:from-amber-600 hover:to-orange-700 transition-all duration-300 font-bold text-sm shadow-lg transform hover:scale-105">{t.searchButton}</button>
+            <button type="submit" className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-1.5 rounded-2xl hover:from-amber-600 hover:to-orange-700 transition-all duration-300 font-bold text-sm shadow-lg transform hover:scale-105">{t.searchButton}</button>
           </form>
 
           {/* Icons */}
@@ -529,7 +538,7 @@ export default function Header() {
               <User className="h-6 w-6 text-white" />
             </button>
             <button onClick={() => setIsInquiryModalOpen(true)} title={t.inquiry} className="bg-gradient-to-r from-gray-900 to-black p-3 rounded-full hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg transform hover:scale-110  ">
-              <Wrench className="h-6 w-6 text-white" />
+              <HelpCircle className="h-6 w-6 text-white" />
             </button>
           </div>
 
@@ -539,41 +548,8 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mega menu (desktop) */}
+        {/* Mega menu (desktop) - Background only, no menu items */}
         <nav className="hidden md:flex items-center gap-6 h-16 border-t border-amber-600">
-          {megaNav.map((item) => (
-            <div key={item.id} className="relative"
-              onMouseEnter={() => setOpenMega(item.id)}
-              onMouseLeave={() => setOpenMega((prev) => (prev === item.id ? null : prev))}
-            >
-              <a 
-                href={item.href}
-                className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-white hover:text-amber-300 transition-colors duration-200 rounded-lg hover:bg-white/10"
-              >
-                {item.id === 'products' ? t.products : item.id === 'specifications' ? t.specifications : item.id === 'applications' ? t.applications : item.id === 'about' ? t.aboutUs : t.contact}
-                {item.columns.length > 0 && <ChevronDown className="h-4 w-4" />}
-              </a>
-              {item.columns.length > 0 && openMega === item.id && (
-                <div className="absolute left-0 mt-2 w-[800px] bg-gradient-to-br from-white via-gray-50 to-amber-50 border-2 border-amber-500 rounded-2xl shadow-2xl p-8 grid grid-cols-2 gap-8 backdrop-blur-lg">
-                  {item.columns.map((col) => (
-                    <div key={col.title}>
-                      <div className="text-sm font-bold text-amber-700 mb-4 uppercase tracking-wider">{col.title === 'Agricultural Machinery' ? t.agriculturalMachinery : col.title === 'By Size' ? t.bySize : col.title}</div>
-                      <ul className="space-y-3">
-                        {col.items.map((i) => (
-                          <li key={i}>
-                            <a href="#" className="text-sm text-gray-800 hover:text-amber-600 font-medium transition-colors duration-200 flex items-center gap-2 hover:bg-amber-100 px-3 py-2 rounded-lg ">
-                              <div className="w-2 h-2 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full "></div>
-                              {i}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
         </nav>
 
         {/* Mobile drawer */}
@@ -582,18 +558,6 @@ export default function Header() {
             <div className="mb-3 flex items-center bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2">
               <Search className="h-5 w-5 text-neutral-500" />
               <input className="flex-1 bg-transparent px-2 outline-none text-sm" placeholder="Search products" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {megaNav.map((item) => (
-                <div key={item.id}>
-                  <div className="text-sm font-semibold mb-2">{item.label}</div>
-                  <ul className="space-y-1">
-                    {(item.columns[0]?.items ?? []).slice(0, 5).map((i) => (
-                      <li key={i}><a className="text-sm text-neutral-700" href="#">{i}</a></li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
             </div>
           </div>
         )}

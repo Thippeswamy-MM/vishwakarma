@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import PromoStrip from './components/PromoStrip';
 import Hero from './components/Hero';
 import About from './components/About';
 import Properties from './components/Properties';
@@ -24,7 +23,6 @@ function HomePage() {
 
       <Header />
       <main className="relative z-10">
-        <PromoStrip />
         <Hero />
         <About />
         <Properties />

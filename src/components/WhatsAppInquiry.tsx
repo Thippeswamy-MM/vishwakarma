@@ -43,7 +43,7 @@ export default function WhatsAppInquiry() {
     );
 
     // Open WhatsApp with pre-filled message
-    const whatsappNumber = '917007821888'; // From the Header component
+    const whatsappNumber = '917860686213'; // From the Header component
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
     
     window.open(whatsappUrl, '_blank');
@@ -326,14 +326,14 @@ export default function WhatsAppInquiry() {
                   <Phone className="h-5 w-5" />
                   <div>
                     <p className="font-semibold">Call Us</p>
-                    <p className="text-sm">+91 7007821888</p>
+                    <p className="text-sm">+91 7860686213</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <MessageCircle className="h-5 w-5" />
                   <div>
                     <p className="font-semibold">WhatsApp</p>
-                    <p className="text-sm">+91 7007821888</p>
+                    <p className="text-sm">+91 7860686213</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

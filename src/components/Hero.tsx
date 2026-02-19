@@ -52,7 +52,7 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-6 pb-8 md:pt-8 md:pb-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border-2 border-amber-500 rounded-2xl px-6 py-3 mb-6 shadow-xl transform hover:scale-105 transition-all duration-300">
+            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border-2 border-amber-500 rounded-2xl px-6 py-3 mb-6 mt-8 shadow-xl transform hover:scale-105 transition-all duration-300">
               <Factory className="h-6 w-6 text-amber-600" />
               <span className="text-lg font-bold text-amber-800">{t.premiumMachinery}</span>
             </div>
@@ -81,15 +81,15 @@ const Hero = () => {
               {/* Enhanced Navigation Buttons */}
               <button 
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-600 to-orange-700 text-white p-3 rounded-full hover:from-amber-700 hover:to-orange-800 transition-all duration-300 shadow-lg transform hover:scale-110"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/50 transition-all duration-300 shadow-lg transform hover:scale-110"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-3 w-3 opacity-70" />
               </button>
               <button 
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-600 to-orange-700 text-white p-3 rounded-full hover:from-amber-700 hover:to-orange-800 transition-all duration-300 shadow-lg transform hover:scale-110"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/50 transition-all duration-300 shadow-lg transform hover:scale-110"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3 w-3 opacity-70" />
               </button>
             </div>
 

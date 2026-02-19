@@ -156,7 +156,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="font-semibold">{t.callUs}</p>
-                    <p className="text-blue-100">+91 9415139283, 7860686213, 7007821888</p>
+                    <p className="text-blue-100">+91 7860686213, 9415139283, 7007821888</p>
                   </div>
                 </div>
 
