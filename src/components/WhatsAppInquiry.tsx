@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight, Wrench, Factory, Truck, Shield, ArrowLeft, MessageCircle, Send } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 export default function WhatsAppInquiry() {
+  const { language } = useLanguage();
+  const t = getTranslations(language);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -71,17 +75,17 @@ export default function WhatsAppInquiry() {
               className="inline-flex items-center gap-2 text-green-100 hover:text-white transition-colors duration-200 font-medium"
             >
               <ArrowLeft className="h-5 w-5" />
-              Back to Home
+              {t.home}
             </Link>
           </div>
           
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
               <MessageCircle className="h-12 w-12" />
-              <h1 className="text-4xl md:text-5xl font-bold">WhatsApp Inquiry</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">{t.whatsappInquiryTitle}</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              Get instant assistance via WhatsApp. Fill out the form below and we'll redirect you to WhatsApp with your inquiry details pre-filled.
+              {t.quotePageSubtitle}
             </p>
           </div>
         </div>
@@ -95,14 +99,14 @@ export default function WhatsAppInquiry() {
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                 <MessageCircle className="h-6 w-6 text-green-600" />
-                Quick WhatsApp Inquiry
+                {t.whatsappInquiryTitle}
               </h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
+                      {t.fullName} *
                     </label>
                     <input
                       type="text"
@@ -117,7 +121,7 @@ export default function WhatsAppInquiry() {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
+                      {t.emailAddress} *
                     </label>
                     <input
                       type="email"
@@ -134,7 +138,7 @@ export default function WhatsAppInquiry() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number *
+                      {t.phoneNumber} *
                     </label>
                     <input
                       type="tel"
@@ -149,7 +153,7 @@ export default function WhatsAppInquiry() {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Company Name
+                      {t.companyNameLabel}
                     </label>
                     <input
                       type="text"
@@ -165,7 +169,7 @@ export default function WhatsAppInquiry() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Interested In *
+                      {t.productInterestedLabel}
                     </label>
                     <select
                       name="product"
@@ -174,7 +178,7 @@ export default function WhatsAppInquiry() {
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
-                      <option value="">Select a product</option>
+                      <option value="">{t.whatsappProductSelectPlaceholder}</option>
                       {products.map(product => (
                         <option key={product} value={product}>{product}</option>
                       ))}
@@ -183,7 +187,7 @@ export default function WhatsAppInquiry() {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quantity
+                      {t.quantityLabel}
                     </label>
                     <input
                       type="text"
@@ -191,14 +195,14 @@ export default function WhatsAppInquiry() {
                       value={formData.quantity}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder="e.g., 1 unit, 5 units"
+                      placeholder={t.quantityPlaceholder}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Urgency
+                    {t.urgencyLabel}
                   </label>
                   <select
                     name="urgency"
@@ -206,15 +210,15 @@ export default function WhatsAppInquiry() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   >
-                    <option value="standard">Standard (1-2 weeks)</option>
-                    <option value="urgent">Urgent (3-5 days)</option>
-                    <option value="express">Express (24-48 hours)</option>
+                    <option value="standard">{t.urgencyStandard}</option>
+                    <option value="urgent">{t.urgencyUrgent}</option>
+                    <option value="express">{t.urgencyExpress}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message
+                    {t.message}
                   </label>
                   <textarea
                     name="message"
@@ -222,7 +226,7 @@ export default function WhatsAppInquiry() {
                     value={formData.message}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Please describe your specific requirements, customization needs, or any questions..."
+                    placeholder={t.additionalRequirementsPlaceholder}
                   />
                 </div>
 
@@ -231,13 +235,13 @@ export default function WhatsAppInquiry() {
                   className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                 >
                   <Send className="h-5 w-5" />
-                  Send to WhatsApp
+                  {t.whatsappInquiryTitle}
                 </button>
               </form>
 
               <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-800">
-                  <strong>Note:</strong> After clicking "Send to WhatsApp", you'll be redirected to WhatsApp with your inquiry details pre-filled in the message.
+                  <strong>{t.whatsappNoteLabel}</strong> {t.whatsappNoteText}
                 </p>
               </div>
             </div>
@@ -249,35 +253,35 @@ export default function WhatsAppInquiry() {
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <MessageCircle className="h-5 w-5 text-green-600" />
-                Why WhatsApp?
+                {t.whatsappInquiryTitle}
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Instant Response</h4>
-                    <p className="text-sm text-gray-600">Get immediate assistance via WhatsApp</p>
+                    <h4 className="font-semibold text-gray-900">{t.whatsappInstantResponseTitle}</h4>
+                    <p className="text-sm text-gray-600">{t.whatsappInstantResponseDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Direct Communication</h4>
-                    <p className="text-sm text-gray-600">Chat directly with our sales team</p>
+                    <h4 className="font-semibold text-gray-900">{t.whatsappDirectCommunicationTitle}</h4>
+                    <p className="text-sm text-gray-600">{t.whatsappDirectCommunicationDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Media Sharing</h4>
-                    <p className="text-sm text-gray-600">Share images and documents easily</p>
+                    <h4 className="font-semibold text-gray-900">{t.whatsappMediaSharingTitle}</h4>
+                    <p className="text-sm text-gray-600">{t.whatsappMediaSharingDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Mobile Friendly</h4>
-                    <p className="text-sm text-gray-600">Inquire from anywhere, anytime</p>
+                    <h4 className="font-semibold text-gray-900">{t.whatsappMobileFriendlyTitle}</h4>
+                    <p className="text-sm text-gray-600">{t.whatsappMobileFriendlyDesc}</p>
                   </div>
                 </div>
               </div>
@@ -285,33 +289,33 @@ export default function WhatsAppInquiry() {
 
             {/* Product Information */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Product Information</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{t.productSpecsTitle}</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Wrench className="h-5 w-5 text-green-600" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Material</h4>
-                    <p className="text-sm text-gray-600">Heavy iron sheets & cast iron</p>
+                    <h4 className="font-semibold text-gray-900">{t.productSpecsMaterialTitle}</h4>
+                    <p className="text-sm text-gray-600">{t.productSpecsMaterialDesc}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Factory className="h-5 w-5 text-green-600" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Capacity</h4>
+                    <h4 className="font-semibold text-gray-900">{t.productSpecsCapacityTitle}</h4>
                     <p className="text-sm text-gray-600">1 Ton/Hour processing</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Truck className="h-5 w-5 text-green-600" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Power Options</h4>
+                    <h4 className="font-semibold text-gray-900">{t.productSpecsPowerOptionsTitle}</h4>
                     <p className="text-sm text-gray-600">39 HP Tractor / 30 HP Electric</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="h-5 w-5 text-green-600" />
                   <div>
-                    <h4 className="font-semibold text-gray-900">Warranty</h4>
+                    <h4 className="font-semibold text-gray-900">{t.productSpecsWarrantyTitle}</h4>
                     <p className="text-sm text-gray-600">1 year manufacturer warranty</p>
                   </div>
                 </div>
@@ -320,34 +324,34 @@ export default function WhatsAppInquiry() {
 
             {/* Contact Information */}
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold mb-4">Direct Contact</h3>
+              <h3 className="text-xl font-bold mb-4">{t.whatsappDirectContactTitle}</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5" />
                   <div>
-                    <p className="font-semibold">Call Us</p>
+                    <p className="font-semibold">{t.callUs}</p>
                     <p className="text-sm">+91 7860686213</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <MessageCircle className="h-5 w-5" />
                   <div>
-                    <p className="font-semibold">WhatsApp</p>
+                    <p className="font-semibold">{t.whatsappInquiry}</p>
                     <p className="text-sm">+91 7860686213</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5" />
                   <div>
-                    <p className="font-semibold">Email</p>
+                    <p className="font-semibold">{t.contactEmailLabel}</p>
                     <p className="text-sm">info@vishwakarmafoundry.com</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Clock className="h-5 w-5" />
                   <div>
-                    <p className="font-semibold">Response Time</p>
-                    <p className="text-sm">Within 30 minutes</p>
+                    <p className="font-semibold">{t.responseTimeHeading}</p>
+                    <p className="text-sm">{t.responseTime30min}</p>
                   </div>
                 </div>
               </div>

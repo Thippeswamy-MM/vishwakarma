@@ -1,27 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Factory, Wrench, Truck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 const Hero = () => {
-  const { isHindi } = useLanguage();
+  const { language } = useLanguage();
+  const t = getTranslations(language);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  const translations = {
-    english: {
-      premiumMachinery: "Premium Agricultural Machinery",
-      tagline: "Leading manufacturer of high-quality agricultural machinery including Half Dala Machine, Bhoosi Tank Model, Balwan Tank Model, and Bran Expert. Built with heavy iron materials for long-lasting performance.",
-      description: "Engineered for durability and efficiency, our Half Dala Machine offers powerful grain processing with minimal downtime, making it a trusted choice for modern agricultural operations.",
-      altText: "Agricultural Machinery"
-    },
-    hindi: {
-      premiumMachinery: "प्रीमियम कृषि मशीनरी",
-      tagline: "उच्च गुणवत्ता वाली कृषि मशीनरी के अग्रणी निर्माता जिसमें हाफ डाला मशीन, भूसी टैंक मॉडल, बलवान टैंक मॉडल और ब्रान एक्सपर्ट शामिल हैं। लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित।",
-      description: "टिकाऊपन और दक्षता के लिए इंजीनियर, हमारी हाफ डाला मशीन न्यूनतम डाउनटाइम के साथ शक्तिशाली अनाज प्रसंस्करण प्रदान करती है, जिससे यह आधुनिक कृषि संचालन के लिए एक विश्वसनीय विकल्प बन जाती है।",
-      altText: "कृषि मशीनरी"
-    }
-  };
-  
-  const t = isHindi ? translations.hindi : translations.english;
   
   const heroImages = [
     "https://images.pexels.com/photos/30005294/pexels-photo-30005294.jpeg",
@@ -52,12 +37,12 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-6 pb-8 md:pt-8 md:pb-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border-2 border-amber-500 rounded-2xl px-6 py-3 mb-6 mt-8 shadow-xl transform hover:scale-105 transition-all duration-300">
-              <Factory className="h-6 w-6 text-amber-600" />
-              <span className="text-lg font-bold text-amber-800">{t.premiumMachinery}</span>
+            <div className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border-2 border-amber-500 rounded-2xl px-5 py-2.5 mb-6 mt-8 shadow-xl transform hover:scale-105 transition-all duration-300">
+              <Factory className="h-5 w-5 text-amber-600" />
+              <span className="text-sm font-semibold text-amber-800">{t.premiumMachinery}</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">Vishwakarma Foundry Works</h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">{t.aboutTitle}</h1>
             <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8 max-w-2xl font-medium">
               {t.tagline}
             </p>
