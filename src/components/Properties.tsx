@@ -2,36 +2,11 @@ import { useState } from 'react';
 import { Filter, Wrench, Zap, Gauge, Heart, Share2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 export default function Properties() {
-  const { isHindi } = useLanguage();
-  
-  const translations = {
-    english: {
-      ourProducts: "Our Products",
-      productsDesc: "High-quality agricultural machinery built with heavy iron materials for long-lasting performance",
-      halfDalaTitle: "Half Dala Machine",
-      halfDalaDesc: "Efficient grain processing machine",
-      balwanBhoosiTitle: "Balwan Bhoosi Tank",
-      balwanBhoosiDesc: "The Balwan Bhoosi Tank (also called Balwan Boosi Tank) is an agricultural storage tank/machine mainly used to store and collect bhoosi (chaff), hay, straw, or dry fodder for animals. It is commonly used in farms, dairy farms, and cattle sheds.",
-      vfwHalfDalaTitle: "VFW Half Dala Machine",
-      vfwHalfDalaDesc: "A VFW Half Dala Machine is an agricultural threshing machine designed to separate grains from stalks, husk, and chaff after harvesting with improved efficiency.",
-      viewDetails: "View Details"
-    },
-    hindi: {
-      ourProducts: "हमारे उत्पाद",
-      productsDesc: "लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित उच्च गुणवत्ता वाली कृषि मशीनरी",
-      halfDalaTitle: "हाफ डाला मशीन",
-      halfDalaDesc: "कुशल अनाज प्रसंस्करण मशीन",
-      balwanBhoosiTitle: "बलवान भूसी टैंक",
-      balwanBhoosiDesc: "बलवान भूसी टैंक (जिसे बलवान बूसी टैंक भी कहा जाता है) एक कृषि भंडारण टैंक/मशीन है जिसका उपयोग मुख्य रूप से जानवरों के लिए भूसी (चैफ), घास, भूसा या सूखा चारा संग्रहीत और एकत्र करने के लिए किया जाता है। यह आमतौर पर खेतों, डेयरी फार्मों और पशुशालाओं में उपयोग किया जाता है।",
-      vfwHalfDalaTitle: "VFW हाफ डाला मशीन",
-      vfwHalfDalaDesc: "VFW हाफ डाला मशीन एक कृषि थ्रेशिंग मशीन है जिसे बेहतर दक्षता के साथ कटाई के बाद अनाज को डंठल, भूसी और भूसी से अलग करने के लिए डिज़ाइन किया गया है।",
-      viewDetails: "विवरण देखें"
-    }
-  };
-  
-  const t = isHindi ? translations.hindi : translations.english;
+  const { language } = useLanguage();
+  const t = getTranslations(language);
   const [filters, setFilters] = useState({
     type: 'all',
     capacity: 'all',
@@ -94,7 +69,7 @@ export default function Properties() {
   const products = [
     {
       id: 1,
-      title: isHindi ? t.halfDalaTitle : 'Half Dala Machine',
+      title: t.halfDalaTitle,
       description: t.halfDalaDesc,
       capacity: '1 Ton/Hour',
       power: '39 HP Tractor / 30 HP Electric',
@@ -105,7 +80,7 @@ export default function Properties() {
     },
     {
       id: 2,
-      title: isHindi ? t.balwanBhoosiTitle : 'Balwan Bhoosi Tank',
+      title: t.balwanBhoosiTitle,
       description: t.balwanBhoosiDesc,
       capacity: '500-1000 Kg',
       power: 'Manual Operation',
@@ -116,7 +91,7 @@ export default function Properties() {
     },
     {
       id: 3,
-      title: isHindi ? t.vfwHalfDalaTitle : 'VFW Half Dala Machine',
+      title: t.vfwHalfDalaTitle,
       description: t.vfwHalfDalaDesc,
       capacity: '1.5 Ton/Hour',
       power: '45 HP Tractor / 35 HP Electric',

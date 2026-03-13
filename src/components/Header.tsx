@@ -3,9 +3,11 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, ChevronDown, PhoneCall, User, HelpCircle, MapPin } from 'lucide-react';
 import { useLanguage, LanguageCode } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 export default function Header() {
-  const { language, setLanguage, isHindi } = useLanguage();
+  const { language, setLanguage } = useLanguage();
+  const t = getTranslations(language);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMega, setOpenMega] = useState<string | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -61,16 +63,31 @@ export default function Header() {
     };
   }, [lastScrollY, scrollTimeout]);
 
-  // Country to language mapping
-  const getLanguageFromCountry = (countryCode: string): LanguageCode => {
-    // We only have full, verified content for English and Hindi.
-    // To avoid wrong or partial translations, we map:
-    // - India -> Hindi
-    // - All other countries -> English
-    if (countryCode === 'IN') {
-      return 'hi';
-    }
-    return 'en';
+  // Map Indian state/region to regional language
+  const getLanguageFromRegion = (countryCode: string, region: string, regionCode: string, city: string): LanguageCode => {
+    if (countryCode !== 'IN') return 'en';
+    const r = region.toLowerCase();
+    const c = city.toLowerCase();
+    // Karnataka - Kannada
+    if (r.includes('karnataka') || regionCode === 'KA' || c.includes('bangalore') || c.includes('bengaluru') || c.includes('mysore') || c.includes('mangalore')) return 'kn';
+    // Tamil Nadu - Tamil
+    if (r.includes('tamil nadu') || regionCode === 'TN' || c.includes('chennai') || c.includes('madurai') || c.includes('coimbatore')) return 'ta';
+    // Kerala - Malayalam
+    if (r.includes('kerala') || regionCode === 'KL' || c.includes('kochi') || c.includes('trivandrum') || c.includes('thiruvananthapuram')) return 'ml';
+    // Andhra Pradesh, Telangana - Telugu
+    if (r.includes('andhra pradesh') || r.includes('telangana') || regionCode === 'AP' || regionCode === 'TG' || c.includes('hyderabad') || c.includes('vizag') || c.includes('vijayawada')) return 'te';
+    // West Bengal - Bengali
+    if (r.includes('west bengal') || regionCode === 'WB' || c.includes('kolkata') || c.includes('howrah')) return 'bn';
+    // Maharashtra - Marathi
+    if (r.includes('maharashtra') || regionCode === 'MH' || c.includes('mumbai') || c.includes('pune') || c.includes('nagpur')) return 'mr';
+    // Gujarat - Gujarati
+    if (r.includes('gujarat') || regionCode === 'GJ' || c.includes('ahmedabad') || c.includes('surat') || c.includes('vadodara')) return 'gu';
+    // Punjab - Punjabi
+    if (r.includes('punjab') || regionCode === 'PB' || c.includes('chandigarh') || c.includes('ludhiana') || c.includes('amritsar')) return 'pa';
+    // Hindi-speaking states (UP, MP, Bihar, Rajasthan, Haryana, Delhi, etc.)
+    if (r.includes('uttar pradesh') || r.includes('madhya pradesh') || r.includes('bihar') || r.includes('rajasthan') || r.includes('haryana') || r.includes('delhi') || regionCode === 'UP' || regionCode === 'MP' || regionCode === 'BR' || regionCode === 'RJ' || regionCode === 'HR' || regionCode === 'DL') return 'hi';
+    // Default for rest of India - Hindi
+    return 'hi';
   };
 
   // Function to detect location automatically
@@ -87,31 +104,59 @@ export default function Header() {
           const country = ipData.country_code;
           const region = ipData.region || ipData.state || '';
           const city = ipData.city || '';
+          const regionCode = ipData.region_code || '';
           
-          // Get language based on country
-          const detectedLang = getLanguageFromCountry(country);
+          // Get language based on region (Indian states -> regional language)
+          const detectedLang = getLanguageFromRegion(country, region, regionCode, city);
           setLanguage(detectedLang);
           
           // Set location display and key
           let locationKey = '';
           if (country === 'IN') {
             const regionLower = region.toLowerCase();
-            if (regionLower.includes('uttar pradesh') || ipData.region_code === 'UP') {
+            if (regionLower.includes('karnataka') || regionCode === 'KA' || city.toLowerCase().includes('bangalore') || city.toLowerCase().includes('bengaluru')) {
+              setUserLocation('Karnataka, India');
+              locationKey = 'karnataka';
+            } else if (regionLower.includes('tamil nadu') || regionCode === 'TN') {
+              setUserLocation('Tamil Nadu, India');
+              locationKey = 'tn';
+            } else if (regionLower.includes('kerala') || regionCode === 'KL') {
+              setUserLocation('Kerala, India');
+              locationKey = 'kerala';
+            } else if (regionLower.includes('andhra pradesh') || regionCode === 'AP') {
+              setUserLocation('Andhra Pradesh, India');
+              locationKey = 'ap';
+            } else if (regionLower.includes('telangana') || regionCode === 'TG') {
+              setUserLocation('Telangana, India');
+              locationKey = 'tg';
+            } else if (regionLower.includes('west bengal') || regionCode === 'WB') {
+              setUserLocation('West Bengal, India');
+              locationKey = 'wb';
+            } else if (regionLower.includes('maharashtra') || regionCode === 'MH') {
+              setUserLocation('Maharashtra, India');
+              locationKey = 'mh';
+            } else if (regionLower.includes('gujarat') || regionCode === 'GJ') {
+              setUserLocation('Gujarat, India');
+              locationKey = 'gujarat';
+            } else if (regionLower.includes('punjab') || regionCode === 'PB') {
+              setUserLocation('Punjab, India');
+              locationKey = 'punjab';
+            } else if (regionLower.includes('uttar pradesh') || regionCode === 'UP') {
               setUserLocation('Uttar Pradesh, India');
               locationKey = 'up';
-            } else if (regionLower.includes('madhya pradesh') || ipData.region_code === 'MP') {
+            } else if (regionLower.includes('madhya pradesh') || regionCode === 'MP') {
               setUserLocation('Madhya Pradesh, India');
               locationKey = 'mp';
-            } else if (regionLower.includes('bihar') || ipData.region_code === 'BR') {
+            } else if (regionLower.includes('bihar') || regionCode === 'BR') {
               setUserLocation('Bihar, India');
               locationKey = 'bihar';
-            } else if (regionLower.includes('rajasthan') || ipData.region_code === 'RJ') {
+            } else if (regionLower.includes('rajasthan') || regionCode === 'RJ') {
               setUserLocation('Rajasthan, India');
               locationKey = 'rajasthan';
-            } else if (regionLower.includes('haryana') || ipData.region_code === 'HR') {
+            } else if (regionLower.includes('haryana') || regionCode === 'HR') {
               setUserLocation('Haryana, India');
               locationKey = 'haryana';
-            } else if (regionLower.includes('delhi') || ipData.region_code === 'DL') {
+            } else if (regionLower.includes('delhi') || regionCode === 'DL') {
               setUserLocation('Delhi, India');
               locationKey = 'delhi';
             } else {
@@ -162,8 +207,8 @@ export default function Header() {
       
       // Fallback: Use browser language preference
       const browserLang = navigator.language || (navigator as any).userLanguage;
-      const langCode = browserLang.split('-')[0] as LanguageCode;
-      const supportedLangs: LanguageCode[] = ['en', 'hi'];
+      const langCode = browserLang.split('-')[0].toLowerCase() as LanguageCode;
+      const supportedLangs: LanguageCode[] = ['en', 'hi', 'kn', 'ta', 'te', 'ml', 'bn', 'mr', 'gu', 'pa'];
       const detectedLang = supportedLangs.includes(langCode) ? langCode : 'en';
       
       setLanguage(detectedLang);
@@ -211,54 +256,6 @@ export default function Header() {
     };
   }, [isLocationMenuOpen]);
 
-  const translations = {
-    english: {
-      searchPlaceholder: "Search products (e.g., Half Dala Machine, Bhoosi Tank)",
-      searchButton: "Search",
-      account: "Account",
-      inquiry: "Inquiry",
-      requestQuote: "Request Quote",
-      factoryVisit: "Factory Visit",
-      qualityManufacturing: "Quality Manufacturing:",
-      heavyIronMachinery: "Heavy Iron Agricultural Machinery",
-      products: "Products",
-      specifications: "Specifications",
-      applications: "Applications",
-      aboutUs: "About Us",
-      contact: "Contact",
-      agriculturalMachinery: "Agricultural Machinery",
-      bySize: "By Size",
-      technical: "Technical",
-      features: "Features",
-      industries: "Industries",
-      powerOptions: "Power Options",
-      inchModels: "Inch Models"
-    },
-    hindi: {
-      searchPlaceholder: "उत्पाद खोजें (जैसे, हाफ डाला मशीन, भूसी टैंक)",
-      searchButton: "खोजें",
-      account: "खाता",
-      inquiry: "पूछताछ",
-      requestQuote: "मूल्य अनुरोध",
-      factoryVisit: "कारखाना भ्रमण",
-      qualityManufacturing: "गुणवत्त निर्माण:",
-      heavyIronMachinery: "भारी लोहे कृषि यंत्र",
-      products: "उत्पाद",
-      specifications: "विशिष्टताएं",
-      applications: "अनुप्रयोग",
-      aboutUs: "हमारे बारे में",
-      contact: "संपर्क करें",
-      agriculturalMachinery: "कृषि यंत्र",
-      bySize: "आकार के अनुसार",
-      technical: "तकनीकी",
-      features: "विशेषताएं",
-      industries: "उद्योग",
-      powerOptions: "पावर विकल्प",
-      inchModels: "इंच मॉडल"
-    }
-  };
-
-  const t = isHindi ? translations.hindi : translations.english;
 
   const products = [
     { name: 'Half Dala Machine', id: 'half-dala-machine' },
@@ -329,7 +326,18 @@ export default function Header() {
   const locationOptions = [
     { key: 'auto', name: '🌍 Auto Detect', location: '', langCode: 'en' as LanguageCode, isAuto: true },
     { key: 'divider1', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
-    // India (Hindi)
+    // Indian states with regional languages
+    { key: 'karnataka', name: 'Karnataka (Kannada)', location: 'Karnataka, India', langCode: 'kn' as LanguageCode },
+    { key: 'tn', name: 'Tamil Nadu (Tamil)', location: 'Tamil Nadu, India', langCode: 'ta' as LanguageCode },
+    { key: 'kerala', name: 'Kerala (Malayalam)', location: 'Kerala, India', langCode: 'ml' as LanguageCode },
+    { key: 'ap', name: 'Andhra Pradesh (Telugu)', location: 'Andhra Pradesh, India', langCode: 'te' as LanguageCode },
+    { key: 'tg', name: 'Telangana (Telugu)', location: 'Telangana, India', langCode: 'te' as LanguageCode },
+    { key: 'wb', name: 'West Bengal (Bengali)', location: 'West Bengal, India', langCode: 'bn' as LanguageCode },
+    { key: 'mh', name: 'Maharashtra (Marathi)', location: 'Maharashtra, India', langCode: 'mr' as LanguageCode },
+    { key: 'gujarat', name: 'Gujarat (Gujarati)', location: 'Gujarat, India', langCode: 'gu' as LanguageCode },
+    { key: 'punjab', name: 'Punjab (Punjabi)', location: 'Punjab, India', langCode: 'pa' as LanguageCode },
+    { key: 'divider2', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
+    // Hindi-speaking states
     { key: 'india', name: 'India (Hindi)', location: 'India', langCode: 'hi' as LanguageCode },
     { key: 'up', name: 'Uttar Pradesh, India', location: 'Uttar Pradesh, India', langCode: 'hi' as LanguageCode },
     { key: 'mp', name: 'Madhya Pradesh, India', location: 'Madhya Pradesh, India', langCode: 'hi' as LanguageCode },
@@ -337,24 +345,10 @@ export default function Header() {
     { key: 'rajasthan', name: 'Rajasthan, India', location: 'Rajasthan, India', langCode: 'hi' as LanguageCode },
     { key: 'haryana', name: 'Haryana, India', location: 'Haryana, India', langCode: 'hi' as LanguageCode },
     { key: 'delhi', name: 'Delhi, India', location: 'Delhi, India', langCode: 'hi' as LanguageCode },
-    { key: 'divider2', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
-    // English UI for all other regions
+    { key: 'divider3', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
+    // International - English
     { key: 'us', name: 'United States', location: 'United States', langCode: 'en' as LanguageCode },
     { key: 'uk', name: 'United Kingdom', location: 'United Kingdom', langCode: 'en' as LanguageCode },
-    { key: 'ca', name: 'Canada', location: 'Canada', langCode: 'en' as LanguageCode },
-    { key: 'au', name: 'Australia', location: 'Australia', langCode: 'en' as LanguageCode },
-    { key: 'es', name: 'Spain', location: 'Spain', langCode: 'en' as LanguageCode },
-    { key: 'mx', name: 'Mexico', location: 'Mexico', langCode: 'en' as LanguageCode },
-    { key: 'fr', name: 'France', location: 'France', langCode: 'en' as LanguageCode },
-    { key: 'de', name: 'Germany', location: 'Germany', langCode: 'en' as LanguageCode },
-    { key: 'it', name: 'Italy', location: 'Italy', langCode: 'en' as LanguageCode },
-    { key: 'pt', name: 'Portugal', location: 'Portugal', langCode: 'en' as LanguageCode },
-    { key: 'br', name: 'Brazil', location: 'Brazil', langCode: 'en' as LanguageCode },
-    { key: 'cn', name: 'China', location: 'China', langCode: 'en' as LanguageCode },
-    { key: 'jp', name: 'Japan', location: 'Japan', langCode: 'en' as LanguageCode },
-    { key: 'ru', name: 'Russia', location: 'Russia', langCode: 'en' as LanguageCode },
-    { key: 'sa', name: 'Saudi Arabia', location: 'Saudi Arabia', langCode: 'en' as LanguageCode },
-    { key: 'divider3', name: '', location: '', langCode: 'en' as LanguageCode, isDivider: true },
     { key: 'international', name: 'International', location: 'International', langCode: 'en' as LanguageCode },
   ];
 
@@ -407,29 +401,29 @@ export default function Header() {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 border-b border-amber-700 shadow-2xl transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-amber-800 border-b border-amber-700 shadow-2xl transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       {/* Location Button - Top Left Corner */}
       <div className="fixed top-2 left-4 z-[9999] location-menu-container">
         <button
           onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)}
-          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-2 py-1 rounded-full shadow-lg flex items-center gap-1.5 hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 relative z-[10000]"
-          title={isAutoDetected ? (isHindi ? 'स्वचालित रूप से पता लगाया गया' : 'Auto-detected') : (isHindi ? 'मैन्युअल रूप से चुना गया' : 'Manually selected')}
+          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 relative z-[10000]"
+          title={isAutoDetected ? t.autoDetected : t.manuallySelected}
         >
-          <MapPin className="h-3 w-3" />
-          <span className="text-[10px] font-semibold">
-            {isDetectingLocation ? 'Detecting...' : (userLocation || 'Location')}
+          <MapPin className="h-4 w-4" />
+          <span className="text-sm font-semibold">
+            {isDetectingLocation ? t.detecting : (userLocation || t.location)}
           </span>
           {isAutoDetected && !isDetectingLocation && (
-            <span className="text-[8px] opacity-75">⚡</span>
+            <span className="text-xs opacity-75">⚡</span>
           )}
-          <ChevronDown className={`h-2.5 w-2.5 transition-transform duration-200 ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
         </button>
         
         {/* Location Dropdown Menu */}
         {isLocationMenuOpen && (
           <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-green-500 overflow-hidden z-[10001]">
             <div className="p-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-xs font-bold px-4 py-2">
-              {isHindi ? 'स्थान चुनें' : 'Select Location'}
+                  {t.selectLocation}
             </div>
             <div className="max-h-80 overflow-y-auto">
               {locationOptions.map((option, index) => {
@@ -486,59 +480,59 @@ export default function Header() {
       )}
 
       {/* Utility bar */}
-      <div className="bg-gradient-to-r from-gray-900 to-black text-white text-xs relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-3 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-gray-900 to-black text-white text-sm relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-4 flex items-center justify-between">
           <div className="hidden sm:block ml-40">
-            <span className="font-bold text-amber-300">{t.qualityManufacturing}</span> 
-            <span className="text-green-300 font-semibold ml-2">{t.heavyIronMachinery}</span>
+            <span className="font-bold text-amber-300 text-sm">{t.qualityManufacturing}</span> 
+            <span className="text-green-300 font-semibold ml-2 text-sm">{t.heavyIronMachinery}</span>
           </div>
           
           <div className="flex items-center gap-6">
-            <Link to="/request-quote" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.requestQuote}</Link>
-            <a href="#" className="hover:text-amber-300 transition-colors duration-200 font-medium">{t.factoryVisit}</a>
-            <a href="#contact" className="flex items-center gap-2 hover:text-amber-300 transition-colors duration-200 font-medium">
+            <Link to="/request-quote" className="hover:text-amber-300 transition-colors duration-200 font-medium text-sm">{t.requestQuote}</Link>
+            <a href="#" className="hover:text-amber-300 transition-colors duration-200 font-medium text-sm">{t.factoryVisit}</a>
+            <div className="flex items-center gap-2 font-medium">
               <PhoneCall className="h-4 w-4" /> 
-              <span className="font-bold">+91 7860686213, 9415139283, 7007821888</span>
-            </a>
+              <span className="font-bold text-sm">+91 7860686213, 9415139283, 7007821888</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main nav */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="h-32 flex items-center justify-between gap-4">
+        <div className="h-40 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="#home" className="flex items-center gap-3">
+          <Link to="#home" className="flex items-center gap-4">
             <div className="relative">
-              <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-28 w-28 object-contain drop-shadow-xl " />
+              <img src="/images/logo/logo.png" alt="Vishwakarma Foundry Works Logo" className="h-40 w-40 object-contain drop-shadow-xl " />
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-20 rounded-full blur-xl "></div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-4xl font-black bg-gradient-to-r from-amber-300 via-orange-400 to-red-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">Vishwakarma</span>
-              <span className="text-2xl font-bold bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">Foundry Works</span>
+            <div className="flex flex-col -ml-6">
+              <span className="text-5xl font-black bg-gradient-to-r from-amber-300 via-orange-400 to-red-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">Vishwakarma</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">Foundry Works</span>
             </div>
           </Link>
 
           {/* Search */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-xl items-center bg-gradient-to-r from-gray-100 to-gray-200 border-2 border-amber-500 rounded-3xl px-4 py-1.5 shadow-xl hover:shadow-2xl transition-all duration-300">
-            <Search className="h-5 w-5 text-amber-600" />
+          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-lg items-center bg-gradient-to-r from-gray-100 to-gray-200 border-2 border-amber-500 rounded-2xl px-3 py-1.5 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <Search className="h-4 w-4 text-amber-600" />
             <input 
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              className="flex-1 bg-transparent px-3 outline-none text-sm font-medium text-gray-800 placeholder-gray-600" 
+              className="flex-1 bg-transparent px-2 outline-none text-xs font-medium text-gray-800 placeholder-gray-600" 
               placeholder={t.searchPlaceholder}
             />
-            <button type="submit" className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-1.5 rounded-2xl hover:from-amber-600 hover:to-orange-700 transition-all duration-300 font-bold text-sm shadow-lg transform hover:scale-105">{t.searchButton}</button>
+            <button type="submit" className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1.5 rounded-xl hover:from-amber-600 hover:to-orange-700 transition-all duration-300 font-bold text-xs shadow-lg transform hover:scale-105">{t.searchButton}</button>
           </form>
 
           {/* Icons */}
-          <div className="hidden md:flex items-center gap-4">
-            <button onClick={() => setIsLoginModalOpen(true)} title={t.account} className="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg transform hover:scale-110 ">
-              <User className="h-6 w-6 text-white" />
+          <div className="hidden md:flex items-center gap-4 -ml-4">
+            <button onClick={() => setIsLoginModalOpen(true)} title={t.account} className="bg-gradient-to-r from-blue-600 to-blue-700 p-2.5 rounded-full hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg transform hover:scale-110 ">
+              <User className="h-5 w-5 text-white" />
             </button>
-            <button onClick={() => setIsInquiryModalOpen(true)} title={t.inquiry} className="bg-gradient-to-r from-gray-900 to-black p-3 rounded-full hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg transform hover:scale-110  ">
-              <HelpCircle className="h-6 w-6 text-white" />
+            <button onClick={() => setIsInquiryModalOpen(true)} title={t.inquiry} className="bg-gradient-to-r from-gray-900 to-black p-2.5 rounded-full hover:from-gray-800 hover:to-gray-900 transition-all duration-300 shadow-lg transform hover:scale-110  ">
+              <HelpCircle className="h-5 w-5 text-white" />
             </button>
           </div>
 
@@ -547,10 +541,6 @@ export default function Header() {
             {isMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
           </button>
         </div>
-
-        {/* Mega menu (desktop) - Background only, no menu items */}
-        <nav className="hidden md:flex items-center gap-6 h-16 border-t border-amber-600">
-        </nav>
 
         {/* Mobile drawer */}
         {isMenuOpen && (
@@ -737,7 +727,7 @@ export default function Header() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-neutral-200 sticky top-0 bg-white z-10">
               <h2 className="text-2xl font-bold text-neutral-900">
-                {isHindi ? 'पूछताछ' : 'Inquiry'}
+                {t.inquiryModalTitle}
               </h2>
               <button 
                 onClick={() => setIsInquiryModalOpen(false)}
@@ -761,44 +751,44 @@ export default function Header() {
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'पूरा नाम *' : 'Full Name *'}
+                          {t.fullNameRequired}
                         </label>
                         <input
                           type="text"
                           required
                           className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                          placeholder={isHindi ? 'अपना नाम' : 'Enter your full name'}
+                          placeholder={t.enterName}
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'ईमेल पता' : 'Email Address *'}
+                          {t.emailRequired}
                         </label>
                         <input
                           type="email"
                           required
                           className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                          placeholder={isHindi ? 'अपना ईमेल' : 'Enter your email'}
+                          placeholder={t.enterEmail}
                           value={formData.email}
                           onChange={(e) => setFormData({...formData, email: e.target.value})}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'फोन नंबर' : 'Phone Number *'}
+                          {t.phoneRequired}
                         </label>
                         <input
                           type="tel"
                           required
                           className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                          placeholder={isHindi ? 'फोन नंबर' : 'Enter your phone number'}
+                          placeholder={t.enterPhone}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'पूछताछ प्रकार *' : 'Inquiry Type *'}
+                          {t.inquiryTypeRequired}
                         </label>
                         <select
                           required
@@ -806,21 +796,21 @@ export default function Header() {
                           value={formData.inquiryType}
                           onChange={(e) => setFormData({...formData, inquiryType: e.target.value})}
                         >
-                          <option value="">{isHindi ? 'उत्पाद चुनें' : 'Select Product'}</option>
-                          <option value="">{isHindi ? 'तकनीकी सहायता' : 'Technical Support'}</option>
-                          <option value="">{isHindi ? 'सामान्य पूछताछ' : 'General Inquiry'}</option>
-                          <option value="">{isHindi ? 'कारखाना भ्रमण' : 'Factory Visit'}</option>
+                          <option value="">{t.selectProduct}</option>
+                          <option value="technical">{t.technicalSupport}</option>
+                          <option value="general">{t.generalInquiry}</option>
+                          <option value="factory">{t.factoryVisitOption}</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                          {isHindi ? 'संदेश *' : 'Message *'}
+                          {t.messageRequired}
                         </label>
                         <textarea
                           required
                           rows={4}
                           className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                          placeholder={isHindi ? 'अपनी पूछताछ का विवरण लिखें...' : 'Describe your inquiry...'}
+                          placeholder={t.inquiryMessagePlaceholder}
                           value={formData.message}
                           onChange={(e) => setFormData({...formData, message: e.target.value})}
                         />
@@ -831,7 +821,7 @@ export default function Header() {
                       type="submit"
                       className="w-full bg-gradient-to-r from-gray-900 to-black text-white py-3 rounded-lg font-semibold hover:from-gray-800 hover:to-gray-900 transition-colors duration-300 mt-6"
                     >
-                      {isHindi ? 'जमा करें' : 'Submit Inquiry'}
+                      {t.submitInquiry}
                     </button>
                   </form>
                 </div>
@@ -840,72 +830,72 @@ export default function Header() {
                 <div className="space-y-6">
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
                     <h3 className="text-lg font-bold text-amber-800 mb-4">
-                      {isHindi ? 'हमें क्यों चुनें?' : 'Why Choose Us?'}
+                      {t.whyChooseUs}
                     </h3>
                     <div className="space-y-3 text-sm text-gray-700">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full"></div>
-                        <span>{isHindi ? 'विशेषज्ञ विनिर्माण' : 'Expert Manufacturing'}</span>
+                        <span>{t.expertManufacturing}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                        <span>{isHindi ? 'गुणवत्ता सुनिश्चित' : 'Quality Assured'}</span>
+                        <span>{t.qualityAssured}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"></div>
-                        <span>{isHindi ? '24/7 सहायता' : '24/7 Support'}</span>
+                        <span>{t.support24_7}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
                     <h4 className="text-md font-bold text-gray-800 mb-4">
-                      {isHindi ? 'हमारी सेवाएँ' : 'Our Services'}
+                      {t.ourServices}
                     </h4>
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-full"></div>
-                        <span>{isHindi ? 'मशीन रिपेयर' : 'Machine Repair'}</span>
+                        <span>{t.machineRepair}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full"></div>
-                        <span>{isHindi ? 'स्पेयर पार्ट्स' : 'Spare Parts'}</span>
+                        <span>{t.spareParts}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full"></div>
-                        <span>{isHindi ? 'कस्टम ऑर्डर' : 'Custom Orders'}</span>
+                        <span>{t.customOrders}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-xl border border-blue-200">
                     <h4 className="text-md font-bold text-gray-800 mb-4">
-                      {isHindi ? 'संपर्क जानकारी' : 'Contact Information'}
+                      {t.contactInfo}
                     </h4>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full"></div>
-                        <span>{isHindi ? 'कॉल: +91 9415139283' : 'Call: +91 9415139283'}</span>
+                        <span>Call: +91 7860686213</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full"></div>
-                        <span>{isHindi ? 'ईमेल: info@vishwakarmafoundry.com' : 'Email: info@vishwakarmafoundry.com'}</span>
+                        <span>Email: info@vishwakarmafoundry.com</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                        <span>{isHindi ? 'व्हाट्सएप: +91 7007821888' : 'WhatsApp: +91 7007821888'}</span>
+                        <span>WhatsApp: +91 7860686213</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="text-center mt-4">
                     <img 
-                      src="/images/logo/logo_aman-removebg-preview (1).png" 
+                      src="/images/logo/logo.png" 
                       alt="Vishwakarma Foundry Works" 
                       className="h-20 w-20 mx-auto rounded-lg shadow-lg"
                     />
                     <p className="text-xs text-gray-500 mt-2">
-                      {isHindi ? '1985 से विश्वसनीय' : 'Trusted Since 1985'}
+                      {t.trustedSince1985}
                     </p>
                   </div>
                 </div>

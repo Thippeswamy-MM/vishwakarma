@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Facebook, Twitter, Instagram, Linkedin, Factory, AlertCircle, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 export default function Contact() {
-  const { isHindi } = useLanguage();
+  const { language } = useLanguage();
+  const t = getTranslations(language);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,83 +19,6 @@ export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const translations = {
-    english: {
-      contactTitle: "Contact Vishwakarma Foundry Works",
-      contactDesc: "Have questions about our agricultural machinery? Our team is here to help you find the perfect equipment for your needs.",
-      contactInfo: "Contact Information",
-      contactInfoDesc: "Reach out to us for any inquiries about our agricultural machinery and manufacturing services.",
-      callUs: "Call Us",
-      email: "Email",
-      factoryAddress: "Factory Address",
-      workingHours: "Working Hours",
-      followUs: "Follow Us",
-      whatsappInquiry: "WhatsApp Inquiry",
-      requestFactoryVisit: "Request Factory Visit",
-      sendMessage: "Send us a Message",
-      fullName: "Full Name *",
-      emailAddress: "Email Address *",
-      phoneNumber: "Phone Number *",
-      subject: "Subject *",
-      selectSubject: "Select a subject",
-      message: "Message *",
-      messagePlaceholder: "Tell us about your requirements and how we can help you...",
-      send: "Send Message",
-      sending: "Sending...",
-      successMessage: "Thank you! Your inquiry has been sent successfully. Our team will contact you within 24 hours.",
-      errorMessage: "Failed to send message. Please try again.",
-      networkError: "Network error. Please check your connection and try again.",
-      productInquiry: "Product Inquiry",
-      halfDala: "Half Dala Machine",
-      bhoosiTank: "Bhoosi Tank Model",
-      balwanTank: "Balwan Tank Model",
-      balwanHalfDala: "Balwan Half Dala",
-      branExpert: "Bran Expert",
-      technicalSupport: "Technical Support",
-      pricing: "Pricing Information",
-      factoryVisit: "Factory Visit Request",
-      general: "General Inquiry"
-    },
-    hindi: {
-      contactTitle: "विश्वकर्मा फाउंड्री वर्क्स से संपर्क करें",
-      contactDesc: "हमारी कृषि मशीनरी के बारे में प्रश्न हैं? हमारी टीम आपकी आवश्यकताओं के लिए सही उपकरण खोजने में आपकी मदद करने के लिए यहां है।",
-      contactInfo: "संपर्क जानकारी",
-      contactInfoDesc: "हमारी कृषि मशीनरी और विनिर्माण सेवाओं के बारे में किसी भी पूछताछ के लिए हमसे संपर्क करें।",
-      callUs: "हमें कॉल करें",
-      email: "ईमेल",
-      factoryAddress: "कारखाना पता",
-      workingHours: "काम के घंटे",
-      followUs: "हमें फॉलो करें",
-      whatsappInquiry: "व्हाट्सएप पूछताछ",
-      requestFactoryVisit: "कारखाना भ्रमण का अनुरोध",
-      sendMessage: "हमें एक संदेश भेजें",
-      fullName: "पूरा नाम *",
-      emailAddress: "ईमेल पता *",
-      phoneNumber: "फोन नंबर *",
-      subject: "विषय *",
-      selectSubject: "एक विषय चुनें",
-      message: "संदेश *",
-      messagePlaceholder: "हमें अपनी आवश्यकताओं के बारे में बताएं और हम आपकी कैसे मदद कर सकते हैं...",
-      send: "संदेश भेजें",
-      sending: "भेज रहे हैं...",
-      successMessage: "धन्यवाद! आपकी पूछताछ सफलतापूर्वक भेज दी गई है। हमारी टीम 24 घंटों के भीतर आपसे संपर्क करेगी।",
-      errorMessage: "संदेश भेजने में विफल। कृपया पुनः प्रयास करें।",
-      networkError: "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।",
-      productInquiry: "उत्पाद पूछताछ",
-      halfDala: "हाफ डाला मशीन",
-      bhoosiTank: "भूसी टैंक मॉडल",
-      balwanTank: "बलवान टैंक मॉडल",
-      balwanHalfDala: "बलवान हाफ डाला",
-      branExpert: "ब्रान एक्सपर्ट",
-      technicalSupport: "तकनीकी सहायता",
-      pricing: "मूल्य जानकारी",
-      factoryVisit: "कारखाना भ्रमण अनुरोध",
-      general: "सामान्य पूछताछ"
-    }
-  };
-
-  const t = isHindi ? translations.hindi : translations.english;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,7 +226,7 @@ export default function Contact() {
                       <option value="bran-expert">{t.branExpert}</option>
                       <option value="technical-support">{t.technicalSupport}</option>
                       <option value="pricing">{t.pricing}</option>
-                      <option value="factory-visit">{t.factoryVisit}</option>
+                      <option value="factory-visit">{t.factoryVisitRequest}</option>
                       <option value="general">{t.general}</option>
                     </select>
                   </div>

@@ -1,50 +1,11 @@
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin, ArrowUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getTranslations } from '../translations';
 
 export default function Footer() {
-  const { isHindi } = useLanguage();
-  
-  const translations = {
-    english: {
-      companyDesc: "Leading manufacturer of premium agricultural machinery with decades of expertise in foundry work and metal fabrication. Built with heavy iron materials for long-lasting performance.",
-      quickLinks: "Quick Links",
-      home: "Home",
-      products: "Products",
-      aboutUs: "About Us",
-      specifications: "Specifications",
-      applications: "Applications",
-      contact: "Contact",
-      contactInfo: "Contact Info",
-      businessHours: "Business Hours",
-      mondaySaturday: "Monday - Saturday: 9:00 AM - 6:00 PM",
-      sunday: "Sunday: Closed",
-      copyright: "© 2026 Vishwakarma Foundry Works. All rights reserved.",
-      privacyPolicy: "Privacy Policy",
-      termsConditions: "Terms & Conditions",
-      warrantyPolicy: "Warranty Policy"
-    },
-    hindi: {
-      companyDesc: "दशकों के अनुभव के साथ प्रीमियम कृषि मशीनरी के अग्रणी निर्माता। लंबे समय तक चलने वाले प्रदर्शन के लिए भारी लोहे की सामग्री से निर्मित।",
-      quickLinks: "त्वरित लिंक",
-      home: "होम",
-      products: "उत्पाद",
-      aboutUs: "हमारे बारे में",
-      specifications: "विशिष्टताएं",
-      applications: "अनुप्रयोग",
-      contact: "संपर्क करें",
-      contactInfo: "संपर्क जानकारी",
-      businessHours: "व्यापारिक घंटे",
-      mondaySaturday: "सोमवार - शनिवार: सुबह 9:00 बजे - शाम 6:00 बजे",
-      sunday: "रविवार: बंद",
-      copyright: "© 2026 विश्वकर्मा फाउंड्री वर्क्स। सभी अधिकार सुरक्षित।",
-      privacyPolicy: "गोपनीयता नीति",
-      termsConditions: "नियम और शर्तें",
-      warrantyPolicy: "वारंटी नीति"
-    }
-  };
-
-  const t = isHindi ? translations.hindi : translations.english;
+  const { language } = useLanguage();
+  const t = getTranslations(language);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -67,7 +28,7 @@ export default function Footer() {
             <div className="group order-1 lg:order-1">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="relative">
-                  <img src="/images/logo/logo_aman-removebg-preview (1).png" alt="Vishwakarma Foundry Works Logo" className="h-16 w-16 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-xl" />
+                  <img src="/images/logo/logo.png" alt="Vishwakarma Foundry Works Logo" className="h-16 w-16 object-contain transform group-hover:scale-110 transition-transform duration-300 drop-shadow-xl" />
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-30 rounded-full blur-xl"></div>
                 </div>
                 <div className="flex flex-col">
@@ -119,7 +80,7 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="order-2 lg:order-3 md:order-3">
-              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent">{t.contactInfo}</h3>
+              <h3 className="text-lg font-bold mb-6 bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent">{t.contactInfoFooter}</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3 group">
                   <div className="bg-gradient-to-r from-amber-600 to-orange-700 p-2 rounded-lg shadow-lg transform group-hover:scale-110 transition-all duration-300">
